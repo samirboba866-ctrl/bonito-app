@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BONITO LIVE COMMAND CENTER v4.3 - GOLD EDITION</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --board-color: #0d0d0d;
+            --green: #00ff66; /* أخضر تكتيكي متوهج */
+            --red: #ff3333;   /* أحمر نيون */
+            --gold: #ffd700;  /* 🌟 ذهبي تكتيكي فخم */
+            --dark-gray: #1a1a1a;
+            --border-glow-green: rgba(0, 255, 102, 0.2);
+            --border-glow-red: rgba(255, 51, 51, 0.2);
+            --border-glow-gold: rgba(255, 215, 0, 0.25);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+            letter-spacing: -0.2px;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        /* 🟢 تأثير التنفس الضوئي الذكي للوحة بناءً على حالة الجاهزية */
+        body.system-ready {
+            box-shadow: inset 0 0 60px rgba(0, 255, 102, 0.05);
+        }
+        body.system-warning {
+            box-shadow: inset 0 0 60px rgba(255, 51, 51, 0.08);
+            animation: pulseBg 2s infinite alternate;
+        }
+        @keyframes pulseBg {
+            0% { box-shadow: inset 0 0 40px rgba(255, 51, 51, 0.03); }
+            100% { box-shadow: inset 0 0 80px rgba(255, 51, 51, 0.12); }
+        }
+
+        /* 🔐 شاشة الدخول التكتيكية الذهبية */
+        .auth-container {
+            background: var(--board-color);
+            border: 2px solid var(--gold);
+            padding: 40px 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 25px var(--border-glow-gold);
+            margin-top: 10vh;
+        }
+        .auth-container h1 {
+            color: var(--gold);
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+            letter-spacing: 2px;
+        }
+        .auth-input {
+            width: 85%;
+            background: #000;
+            border: 2px solid var(--red);
+            color: var(--red);
+            padding: 12px;
+            font-size: 15px;
+            text-align: center;
+            margin: 25px 0;
+            letter-spacing: 2px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 0 10px var(--border-glow-red);
+        }
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 10px var(--border-glow-gold);
+        }
+        .auth-btn {
+            background: #000;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 12px;
+            width: 90%;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s ease;
+        }
+        .auth-btn:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        /* 🪖 اللوحة الرئيسية المحسنة للموبايل والكمبيوتر */
+        .scout-board {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--board-color);
+            border: 2px solid #222;
+            padding: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            box-sizing: border-box;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        @media (min-width: 900px) {
+            .scout-board {
+                max-width: 1050px;
+                display: none;
+                grid-template-columns: 1fr 1.1fr 1fr;
+                gap: 15px;
+            }
+            .header-main, .utilities-row, .report-btn, .footer-motto {
+                grid-column: 1 / -1;
+            }
+            .center-panel {
+                order: 0;
+            }
+        }
+
+        .header-main {
+            text-align: center;
+            border: 2px solid #222;
+            background: #000;
+            padding: 15px;
+        }
+        .header-main h1 { 
+            margin: 0; 
+            color: #fff; 
+            font-size: 20px; 
+            font-weight: 700; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.25); /* توهج ذهبي هادئ */
+        }
+        .header-main p { margin: 5px 0 0 0; color: #555; font-size: 10px; letter-spacing: 1px; }
+
+        /* 🔍 شريط البحث وأدوات الإدارة المحسنة المقاسات */
+        .utilities-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 150px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+        .search-box:focus { outline: none; border-color: var(--gold); }
+        
+        .util-btn {
+            background: #000;
+            border: 1px solid #444;
+            color: #aaa;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .util-btn:hover { background: #fff; color: #000; border-color: #fff; }
+        
+        /* زر الإضافة الذهبي المحدث */
+        .util-btn.add-gold {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 8px var(--border-glow-gold);
+        }
+        .util-btn.add-gold:hover { background: var(--gold); color: #000; }
+        .util-btn.reset-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+        .column { display: flex; flex-direction: column; gap: 8px; }
+        .col-title {
+            text-align: center;
+            padding: 10px;
+            font-weight: 700;
+            color: #000;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+        .col-title.pres { background: var(--green); color: #000; }
+        .col-title.abs { background: var(--red); color: #fff; }
+
+        /* خ خانات الأسماء الثابتة لمنع التمدد الرأسي */
+        .member-item {
+            background: #000;
+            border: 1px solid #1c1c1c;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            min-height: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .member-item:hover { border-color: #333; }
+
+        .member-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .member-tag {
+            color: #fff;
+            font-weight: 400;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 10px;
+            flex: 1;
+        }
+        
+        .delete-member-btn {
+            background: none;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            margin-right: 10px;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .delete-member-btn:hover { color: var(--red); }
+
+        /* السلايدر التكتيكي المحكم */
+        .slider-slot {
+            width: 65px;
+            height: 22px;
+            background: #111;
+            border: 1px solid #252525;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .slider-fill {
+            position: absolute;
+            top: 0; height: 100%; width: 100%;
+            transition: background 0.2s;
+        }
+        .is-present .slider-fill { background: rgba(0, 255, 102, 0.08); }
+        .is-absent .slider-fill { background: rgba(255, 51, 51, 0.08); }
+        
+        .slider-knob {
+            width: 26px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            transition: left 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .is-present .slider-knob { left: 0px; background: var(--green); box-shadow: 0 0 6px rgba(0, 255, 102, 0.4); }
+        .is-absent .slider-knob { left: 37px; background: var(--red); box-shadow: 0 0 6px rgba(255, 51, 51, 0.4); }
+
+        .reason-box {
+            width: 100%;
+            background: #000;
+            border: 1px solid #222;
+            color: var(--red);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 6px;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+        .reason-box:focus { outline: none; border-color: var(--red); }
+
+        /* 🎛️ اللوحة المركزية (المقاييس الرقمية) */
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #222;
+            padding: 15px;
+            background: #000;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 899px) {
+            .center-panel {
+                order: -1;
+            }
+        }
+
+        .sys-indicator {
+            border: 1px solid var(--green);
+            padding: 6px 14px;
+            background: var(--board-color);
+            margin-bottom: 15px;
+            font-size: 11px;
+            color: var(--green);
+            box-shadow: 0 0 10px var(--border-glow-green);
+        }
+        .led-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--green);
+            margin-left: 6px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .readiness-display {
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #222;
+            padding: 12px 25px;
+            background: var(--board-color);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .readiness-title { font-size: 11px; color: #555; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .readiness-value { font-size: 36px; font-weight: 700; color: #fff; }
+
+        .digital-row { display: flex; gap: 8px; width: 100%; box-sizing: border-box; }
+        .crypto-box {
+            background: var(--board-color);
+            border: 1px solid #222;
+            flex: 1;
+            padding: 10px 4px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        /* تحديث مقياس الـ TOTAL ليأخذ اللون الذهبي الفخم */
+        .crypto-box.tot { border-color: var(--gold); box-shadow: 0 0 5px var(--border-glow-gold); }
+        .crypto-box.pre { border-color: var(--green); box-shadow: 0 0 5px var(--border-glow-green); }
+        .crypto-box.abs { border-color: var(--red); box-shadow: 0 0 5px var(--border-glow-red); }
+        .crypto-lbl { font-size: 9px; color: #555; margin-bottom: 3px; text-transform: uppercase; }
+        .crypto-val { font-size: 20px; font-weight: 700; }
+        .tot .crypto-val { color: var(--gold); text-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+        .pre .crypto-val { color: var(--green); }
+        .abs .crypto-val { color: var(--red); }
+
+        .footer-motto { text-align: center; color: #333; font-size: 10px; margin-top: 5px; border-top: 1px solid #222; padding-top: 10px; width: 100%; }
+        
+        .report-btn { 
+            background: #000; 
+            color: #fff; 
+            border: 2px solid #fff; 
+            padding: 12px; 
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            margin-top: 5px;
+            font-size: 13px;
+            transition: all 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .report-btn:hover { background: #fff; color: #000; }
+
+        /* 🚨 نظام التنبيهات المدمج المحدث بالوهج الذهبي للعمليات الناجحة */
+        .toast-notification {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            border: 2px solid var(--red);
+            color: #fff;
+            padding: 14px 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 0 15px var(--border-glow-red);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 99999;
+            width: 85%;
+            max-width: 380px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .toast-notification.success {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px var(--border-glow-gold);
+            color: #fff;
+        }
+        .toast-notification.show { bottom: 30px; }
+
+        /* 📋 نافذة التقرير الاحترافية المحدثة باللون الذهبي */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background: var(--board-color);
+            border: 2px solid var(--gold);
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px var(--border-glow-gold);
+        }
+        .modal-header {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 13px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .report-textarea {
+            width: 100%;
+            height: 280px;
+            background: #000;
+            border: 1px solid #222;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none;
+            white-space: pre;
+            overflow-y: auto;
+        }
+        .report-textarea:focus { outline: none; border-color: var(--gold); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: #000;
+            color: #aaa;
+            transition: all 0.2s;
+        }
+        .btn-close:hover { background: #ff3333; border-color: #ff3333; color: #fff; }
+        .btn-copy { border-color: var(--gold); color: var(--gold); }
+        .btn-copy:hover { background: var(--gold); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container" id="authScreen">
+        <h1>BONITO</h1>
+        <p style="color:#555; font-size:11px; margin-top:5px; letter-spacing:1px;">LIVE ATTENDANCE v4.3</p>
+        <div id="authForm">
+            <input type="password" class="auth-input" id="secretKey" placeholder="ENTER SYSTEM KEY">
+            <br>
+            <button class="auth-btn" onclick="triggerAuth()">AUTHENTICATE</button>
+        </div>
+    </div>
+
+    <div class="scout-board" id="scoutBoard">
+        <div class="header-main">
+            <h1>BONITO COMMAND CONTROL</h1>
+            <p>TACTICAL MONITORING & ATTENDANCE SYSTEM (LIVE)</p>
+        </div>
+
+        <div class="utilities-row">
+            <input type="text" class="search-box" id="searchBar" placeholder="🔍 SEARCH OPERATOR..." oninput="buildDashboard()">
+            <button class="util-btn add-gold" onclick="addNewMember()">[+] ADD</button>
+            <button class="util-btn reset-btn" onclick="triggerMassReset()">[⚡] RESET ALL</button>
+        </div>
+
+        <div class="column" id="leftColumn">
+            <div class="col-title pres">PRESENT ROSTER</div>
+            <div id="presentContainer"></div>
+        </div>
+
+        <div class="center-panel">
+            <div class="sys-indicator">SYS STATUS: <span id="sysStatusText" style="font-weight:bold;">ONLINE</span><span class="led-dot"></span></div>
+            
+            <div class="readiness-display">
+                <div class="readiness-title">MISSION READINESS</div>
+                <div class="readiness-value" id="gaugeText">100%</div>
+            </div>
+
+            <div class="digital-row">
+                <div class="crypto-box tot"><div class="crypto-lbl">TOTAL</div><div class="crypto-val" id="valTotal">00</div></div>
+                <div class="crypto-box pre"><div class="crypto-lbl">GROUND</div><div class="crypto-val" id="valPresent">00</div></div>
+                <div class="crypto-box abs"><div class="crypto-lbl">ABSENT</div><div class="crypto-val" id="valAbsent">00</div></div>
+            </div>
+        </div>
+
+        <div class="column" id="rightColumn">
+            <div class="col-title abs">ABSENT ROSTER</div>
+            <div id="absentContainer"></div>
+        </div>
+
+        <button class="report-btn" onclick="fireReport()">GENERATE FORCE REPORT</button>
+        <div class="footer-motto">// CONTROL ROOM TERMINAL // STATUS SECURE //</div>
+    </div>
+
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">REPORT GENERATION COMPLETED</div>
+            <textarea class="report-textarea" id="reportTextarea" readonly></textarea>
+            <div class="modal-actions">
+                <button class="modal-btn btn-close" onclick="closeModal()">CLOSE</button>
+                <button class="modal-btn btn-copy" onclick="copyReport()">COPY REPORT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customToast" class="toast-notification">
+        <span id="toastMessage">ALERT</span>
+    </div>
+
+<script>
+    const MASTER_KEY = "te._.nasr";
+
+    // 🔊 مؤثرات صوتية تكتيكية خفيفة ومحترفة
+    const audioClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    const audioSuccess = new Audio('https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3');
+    
+    audioClick.volume = 0.2;
+    audioSuccess.volume = 0.3;
+
+    function playClick() { audioClick.currentTime = 0; audioClick.play().catch(e=>{}); }
+    function playSuccess() { audioSuccess.currentTime = 0; audioSuccess.play().catch(e=>{}); }
+
+    const firebaseConfig = {
+        databaseURL: "https://bonito-attendance-default-rtdb.firebaseio.com/" 
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const dbRef = firebase.database().ref("patrol_attendance");
+
+    const defaultMembers = [
+        { name: "⭐ Abanoub Ashraf", rank: "PL", status: true, reason: "" },
+        { name: "⭐ Ireny Alfons", rank: "APL", status: true, reason: "" },
+        { name: "Bavly Samir", rank: "", status: true, reason: "" },
+        { name: "Gevara Michil", rank: "", status: true, reason: "" },
+        { name: "Kirollos Ehab", rank: "", status: true, reason: "" },
+        { name: "Besada Hany", rank: "", status: true, reason: "" },
+        { name: "Thomas Micheal", rank: "", status: true, reason: "" },
+        { name: "Ireny Sameh", rank: "", status: true, reason: "" },
+        { name: "Lusinda Waleed", rank: "", status: true, reason: "" },
+        { name: "Merna Maged", rank: "", status: true, reason: "" },
+        { name: "Jessica Waleed", rank: "", status: true, reason: "" },
+        { name: "Marina Magdy", rank: "", status: true, reason: "" },
+        { name: "Litsa Hany", rank: "", status: true, reason: "" },
+        { name: "Maria Bassem", rank: "", status: true, reason: "" },
+        { name: "Ereny Ashraf", rank: "", status: true, reason: "" }
+    ];
+
+    let localDB = [];
+
+    // دالة التنبيه الاحترافية بديلة الـ alert()
+    function showToast(message, isSuccess = false) {
+        const toast = document.getElementById('customToast');
+        if (isSuccess) {
+            toast.classList.add('success');
+        } else {
+            toast.classList.remove('success');
+        }
+        document.getElementById('toastMessage').innerText = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3500);
+    }
+
+    function triggerAuth() {
+        const inputKey = document.getElementById('secretKey').value.trim();
+        if (inputKey === MASTER_KEY) {
+            playSuccess();
+            document.getElementById('authScreen').style.display = 'none';
+            if(window.innerWidth >= 900) {
+                document.getElementById('scoutBoard').style.display = 'grid';
+            } else {
+                document.getElementById('scoutBoard').style.display = 'flex';
+            }
+            
+            dbRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    localDB = data;
+                } else {
+                    localDB = defaultMembers;
+                    dbRef.set(defaultMembers);
+                }
+                buildDashboard();
+            });
+        } else {
+            showToast("SECURITY VIOLATION: INVALID SECURITY KEY", false);
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        if(document.getElementById('scoutBoard').style.display !== 'none' && document.getElementById('scoutBoard').style.display !== '') {
+            if(window.innerWidth >= 900) {
+                document.getElementById('scoutBoard').style.display = 'grid';
+            } else {
+                document.getElementById('scoutBoard').style.display = 'flex';
+            }
+        }
+    });
+
+    function buildDashboard() {
+        const presContainer = document.getElementById('presentContainer');
+        const absContainer = document.getElementById('absentContainer');
+        const searchInput = document.getElementById('searchBar').value.toLowerCase().trim();
+        
+        presContainer.innerHTML = '';
+        absContainer.innerHTML = '';
+
+        let presentCount = 0;
+
+        localDB.forEach((member, index) => {
+            let displayLabel = member.name;
+            if(member.rank) displayLabel += ` (${member.rank})`;
+
+            if(searchInput !== "" && !displayLabel.toLowerCase().includes(searchInput)) {
+                if (member.status) presentCount++;
+                return;
+            }
+
+            const itemHtml = document.createElement('div');
+            itemHtml.className = 'member-item';
+            itemHtml.innerHTML = `
+                <div class="member-row">
+                    <button class="delete-member-btn" onclick="deleteMember(${index})">✕</button>
+                    <div class="member-tag">${displayLabel}</div>
+                    <div class="slider-slot ${member.status ? 'is-present' : 'is-absent'}" onclick="shiftToggle(${index})">
+                        <div class="slider-fill"></div>
+                        <div class="slider-knob"></div>
+                    </div>
+                </div>
+                ${!member.status ? `<input type="text" class="reason-box" placeholder="REASON FOR ABSENCE..." value="${member.reason || ''}" onchange="writeReason(${index}, this.value)">` : ''}
+            `;
+
+            if (member.status) {
+                presentCount++;
+                presContainer.appendChild(itemHtml);
+            } else {
+                absContainer.appendChild(itemHtml);
+            }
+        });
+
+        const total = localDB.length;
+        const absentCount = total - presentCount;
+        const readinessPct = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+
+        document.getElementById('valTotal').innerText = String(total).padStart(2, '0');
+        document.getElementById('valPresent').innerText = String(presentCount).padStart(2, '0');
+        document.getElementById('valAbsent').innerText = String(absentCount).padStart(2, '0');
+        document.getElementById('gaugeText').innerText = readinessPct + "%";
+
+        if(readinessPct >= 75) {
+            document.body.className = "system-ready";
+            document.getElementById('sysStatusText').innerText = "ONLINE";
+            document.getElementById('sysStatusText').style.color = "var(--green)";
+        } else {
+            document.body.className = "system-warning";
+            document.getElementById('sysStatusText').innerText = "ALERT: LOW FORCE";
+            document.getElementById('sysStatusText').style.color = "var(--red)";
+        }
+    }
+
+    function shiftToggle(idx) {
+        playClick();
+        localDB[idx].status = !localDB[idx].status;
+        if(localDB[idx].status) localDB[idx].reason = ""; 
+        dbRef.set(localDB);
+    }
+
+    function writeReason(idx, txt) {
+        localDB[idx].reason = txt;
+        dbRef.set(localDB);
+    }
+
+    function addNewMember() {
+        playClick();
+        const fullName = prompt("ENTER OPERATOR FULL NAME:");
+        if (!fullName || fullName.trim() === "") return;
+        
+        const rank = prompt("ENTER RANK (LEAVE EMPTY IF NONE):");
+        
+        localDB.push({
+            name: fullName.trim(),
+            rank: rank ? rank.trim() : "",
+            status: true,
+            reason: ""
+        });
+        
+        dbRef.set(localDB);
+        showToast(`ADDED ${fullName.toUpperCase()} TO ACTIVE ROSTER`, true);
+    }
+
+    function deleteMember(idx) {
+        playClick();
+        const check = confirm(`ARE YOU SURE YOU WANT TO REMOVE: ${localDB[idx].name}?`);
+        if(check) {
+            const removedName = localDB[idx].name;
+            localDB.splice(idx, 1);
+            dbRef.set(localDB);
+            showToast(`REMOVED ${removedName.toUpperCase()} FROM DATABASE`, false);
+        }
+    }
+
+    function triggerMassReset() {
+        playClick();
+        const verify = confirm("⚡ EXECUTE SYSTEM MASS RESET? ALL MEMBERS WILL BE MARKED AS PRESENT.");
+        if(verify) {
+            localDB.forEach(m => {
+                m.status = true;
+                m.reason = "";
+            });
+            dbRef.set(localDB);
+            playSuccess();
+            showToast("ALL OPERATORS RESTORED TO ACTIVE STATUS", true);
+        }
+    }
+
+    function fireReport() {
+        playClick();
+        let presentNum = 0;
+        localDB.forEach(m => { if(m.status) presentNum++; });
+
+        let reportStructure = `====================================\n`;
+        reportStructure += `   BONITO PATROL - FORCE REPORT\n`;
+        reportStructure += `   DATE: ${new Date().toLocaleDateString()}\n`;
+        reportStructure += `====================================\n`;
+        reportStructure += `TOTAL FORCE      :: ${localDB.length}\n`;
+        reportStructure += `FORCE ON GROUND  :: ${presentNum}\n`;
+        reportStructure += `ABSENT MEMBERS   :: ${localDB.length - presentNum}\n`;
+        reportStructure += `MISSION READINESS:: ${localDB.length > 0 ? Math.round((presentNum / localDB.length) * 100) : 0}%\n`;
+        reportStructure += `------------------------------------\n`;
+        reportStructure += `DETAILED ROSTER:\n`;
+
+        localDB.forEach((m, idx) => {
+            let num = String(idx + 1).padStart(2, '0');
+            let nameAndRank = m.name + (m.rank ? ` (${m.rank})` : '');
+            if (m.status) {
+                reportStructure += `[${num}] ${nameAndRank} --> PRESENT\n`;
+            } else {
+                let reasonTxt = m.reason ? m.reason : "NO REASON SPECIFIED";
+                reportStructure += `[${num}] ${nameAndRank} --> ABSENT (${reasonTxt})\n`;
+            }
+        });
+        reportStructure += `====================================`;
+
+        document.getElementById('reportTextarea').value = reportStructure;
+        document.getElementById('reportModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        playClick();
+        document.getElementById('reportModal').style.display = 'none';
+    }
+
+    function copyReport() {
+        const textarea = document.getElementById('reportTextarea');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        
+        try {
+            document.execCommand('copy');
+            playSuccess();
+            showToast('REPORT COPIED TO CLIPBOARD SUCCESSFUL', true);
+        } catch (err) {
+            showToast('FAILED TO COPY TERMINAL OUTPUT', false);
+        }
+    }
+</script>
+</body>
+</html>

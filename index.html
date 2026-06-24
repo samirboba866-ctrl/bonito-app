@@ -7,15 +7,15 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
         :root {
-            --bg-color: #050505;
-            --board-color: #0d0d0d;
+            --bg-color: #f5f7fa;
+            --board-color: #ffffff;
             --green: #00ff66; /* أخضر تكتيكي متوهج */
             --red: #ff3333;   /* أحمر نيون */
             --gold: #ffd700;  /* 🌟 ذهبي تكتيكي فخم */
@@ -27,8 +27,8 @@
 
         body {
             background-color: var(--bg-color);
-            color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
+            color: #222222;
+            font-family: 'Cairo', sans-serif;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -74,7 +74,7 @@
         }
         .auth-input {
             width: 85%;
-            background: #000;
+            background: #fff;
             border: 2px solid var(--red);
             color: var(--red);
             padding: 12px;
@@ -124,12 +124,12 @@
         }
 
         @media (min-width: 900px) {
-            .scout-board {
-                max-width: 1050px;
-                display: none;
-                grid-template-columns: 1fr 1.1fr 1fr;
-                gap: 15px;
-            }
+    .scout-board {
+        display: grid;
+        max-width: 1050px;
+        grid-template-columns: 1fr 1.1fr 1fr;
+        gap: 15px;
+    }
             .header-main, .utilities-row, .report-btn, .footer-motto {
                 grid-column: 1 / -1;
             }
@@ -141,12 +141,12 @@
         .header-main {
             text-align: center;
             border: 2px solid #222;
-            background: #000;
+            background: #ffffff;
             padding: 15px;
         }
         .header-main h1 { 
             margin: 0; 
-            color: #fff; 
+            color: #222;
             font-size: 20px; 
             font-weight: 700; 
             letter-spacing: 2px;
@@ -163,9 +163,9 @@
         .search-box {
             flex: 1;
             min-width: 150px;
-            background: #000;
+            background: #fff;
             border: 1px solid #333;
-            color: #fff;
+            color: #222;
             padding: 10px 12px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
@@ -174,7 +174,7 @@
         .search-box:focus { outline: none; border-color: var(--gold); }
         
         .util-btn {
-            background: #000;
+            background: #fff;
             border: 1px solid #444;
             color: #aaa;
             padding: 10px 12px;
@@ -196,30 +196,54 @@
         .util-btn.add-gold:hover { background: var(--gold); color: #000; }
         .util-btn.reset-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
-        .column { display: flex; flex-direction: column; gap: 8px; }
-        .col-title {
-            text-align: center;
-            padding: 10px;
-            font-weight: 700;
-            color: #000;
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 1px;
-        }
+        .column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-radius: 25px; /* 🔥 كيرڤ للعمود نفسه */
+    overflow: hidden;    /* عشان المحتوى يلتزم بالشكل */
+}
+
+/* كيرڤ لعنوان كل رستر */
+.col-title {
+    text-align: center;
+    padding: 10px;
+    font-weight: 700;
+    color: #000;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: 25px 25px 0 0; /* 🔥 أعلى الكارت */
+}
+
+/* كيرڤ أسفل الكارت لو محتاج */
+#presentContainer,
+#absentContainer {
+    border-radius: 0 0 25px 25px;
+    overflow: hidden;
+}
+.column {
+    background: #fff;
+    border: 1px solid #222;
+    padding: 8px;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
         .col-title.pres { background: var(--green); color: #000; }
         .col-title.abs { background: var(--red); color: #fff; }
 
         /* خ خانات الأسماء الثابتة لمنع التمدد الرأسي */
         .member-item {
-            background: #000;
-            border: 1px solid #1c1c1c;
-            padding: 10px 12px;
-            box-sizing: border-box;
-            min-height: 45px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    background: #ffffff;
+    border: 1px solid #1c1c1c;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    min-height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 25px; /* 🔥 كيرڤ واضح للكارڈ */
+}
         .member-item:hover { border-color: #333; }
 
         .member-row {
@@ -229,7 +253,7 @@
             width: 100%;
         }
         .member-tag {
-            color: #fff;
+            color: #222;
             font-weight: 400;
             font-size: 13px;
             white-space: nowrap;
@@ -254,29 +278,34 @@
 
         /* السلايدر التكتيكي المحكم */
         .slider-slot {
-            width: 65px;
-            height: 22px;
-            background: #111;
-            border: 1px solid #252525;
-            position: relative;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .slider-fill {
-            position: absolute;
-            top: 0; height: 100%; width: 100%;
-            transition: background 0.2s;
-        }
-        .is-present .slider-fill { background: rgba(0, 255, 102, 0.08); }
-        .is-absent .slider-fill { background: rgba(255, 51, 51, 0.08); }
-        
-        .slider-knob {
-            width: 26px;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            transition: left 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
+    width: 65px;
+    height: 22px;
+    background: #111;
+    border: 1px solid #252525;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 9999px; /* 🔥 كيرڤ كامل */
+    overflow: hidden;      /* مهم عشان الحركة تبقى ناعمة */
+}
+
+.slider-fill {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    transition: background 0.2s;
+    border-radius: 9999px;
+}
+
+.slider-knob {
+    width: 26px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transition: left 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 9999px; /* 🔥 دائري بالكامل */
+}
         .is-present .slider-knob { left: 0px; background: var(--green); box-shadow: 0 0 6px rgba(0, 255, 102, 0.4); }
         .is-absent .slider-knob { left: 37px; background: var(--red); box-shadow: 0 0 6px rgba(255, 51, 51, 0.4); }
 
@@ -300,7 +329,7 @@
             align-items: center;
             border: 1px solid #222;
             padding: 15px;
-            background: #000;
+            background: #fff;
             justify-content: center;
             box-sizing: border-box;
         }
@@ -345,8 +374,12 @@
             box-sizing: border-box;
         }
         .readiness-title { font-size: 11px; color: #555; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .readiness-value { font-size: 36px; font-weight: 700; color: #fff; }
-
+        .readiness-value {
+    font-size: 42px;
+    font-weight: 900;
+    color: #000;
+    text-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
         .digital-row { display: flex; gap: 8px; width: 100%; box-sizing: border-box; }
         .crypto-box {
             background: var(--board-color);
@@ -450,9 +483,9 @@
         .report-textarea {
             width: 100%;
             height: 280px;
-            background: #000;
+            background: #fff;
             border: 1px solid #222;
-            color: #fff;
+            color: #222;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             padding: 10px;
@@ -478,9 +511,120 @@
         .btn-close:hover { background: #ff3333; border-color: #ff3333; color: #fff; }
         .btn-copy { border-color: var(--gold); color: var(--gold); }
         .btn-copy:hover { background: var(--gold); color: #000; }
+        .member-item img:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: 0.2s;
+}
+.member-item img {
+    transition: 0.2s;
+}
+.util-btn,
+.member-item,
+.search-box,
+.auth-container,
+.scout-board,
+.modal-content,
+.report-btn,
+.crypto-box,
+.slider-slot,
+.toast-notification {
+    border-radius: 12px;
+}
+.history-item{
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #222;
+    border-radius: 14px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.history-item:hover{
+    transform: scale(1.02);
+    border-color: gold;
+}
+/* 🌐 GLOBAL CURVE DESIGN RULE */
+button,
+input,
+textarea,
+select,
+.util-btn,
+.member-item,
+.search-box,
+.auth-container,
+.scout-board,
+.modal-content,
+.report-btn,
+.crypto-box,
+.slider-slot,
+.toast-notification,
+.history-item {
+    border-radius: 18px !important;
+}
+* {
+    transition: all 0.2s ease;
+}
+:root {
+    --ui-radius: 20px;
+}
+
+/* 🔥 توحيد الحواف لكل العناصر الأساسية */
+.util-btn,
+.member-item,
+.search-box,
+.auth-container,
+.scout-board,
+.modal-content,
+.report-btn,
+.crypto-box,
+.slider-slot,
+.toast-notification,
+.column,
+.col-title,
+#presentContainer,
+#absentContainer {
+    border-radius: var(--ui-radius) !important;
+}
+.history-delete-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    background: #000;
+    color: #ff3333;
+    border: 2px solid #ff3333;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 18px;
+    transition: 0.2s;
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.15);
+}
+
+.history-delete-btn:hover {
+    background: #ff3333;
+    color: #fff;
+    transform: scale(1.02);
+    box-shadow: 0 0 18px rgba(255, 51, 51, 0.3);
+}
     </style>
 </head>
 <body>
+  <div id="loadingScreen" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:#000;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;
+font-family:monospace;">
+LOADING SYSTEM...
+</div>
 
     <div class="auth-container" id="authScreen">
         <h1>BONITO</h1>
@@ -500,7 +644,12 @@
 
         <div class="utilities-row">
             <input type="text" class="search-box" id="searchBar" placeholder="🔍 SEARCH OPERATOR..." oninput="buildDashboard()">
-            <button class="util-btn add-gold" onclick="addNewMember()">[+] ADD</button>
+            <button class="util-btn add-gold"
+onclick="openAddModal()">[+] ADD</button>
+            <button id="saveBtn" class="util-btn" onclick="saveDailyLog()">📅 SAVE DAY</button>
+            <button class="util-btn" onclick="openHistory()">
+📜 HISTORY
+</button>
             <button class="util-btn reset-btn" onclick="triggerMassReset()">[⚡] RESET ALL</button>
         </div>
 
@@ -529,7 +678,7 @@
             <div id="absentContainer"></div>
         </div>
 
-        <button class="report-btn" onclick="fireReport()">GENERATE FORCE REPORT</button>
+        <button id="reportBtn" class="report-btn" onclick="fireReport()">GENERATE FORCE REPORT</button>
         <div class="footer-motto">// CONTROL ROOM TERMINAL // STATUS SECURE //</div>
     </div>
 
@@ -540,16 +689,72 @@
             <div class="modal-actions">
                 <button class="modal-btn btn-close" onclick="closeModal()">CLOSE</button>
                 <button class="modal-btn btn-copy" onclick="copyReport()">COPY REPORT</button>
+                <button class="modal-btn btn-copy" onclick="sendWhatsapp()">
+WHATSAPP
+</button>
             </div>
+            <div id="historyContainer">
+            </div>
+
+<button class="history-delete-btn" onclick="deleteAllHistory()">
+🗑 DELETE ALL HISTORY
+</button>
         </div>
     </div>
 
+    <div class="modal-overlay" id="addMemberModal">
+    <div class="modal-content">
+        <div class="modal-header">ADD NEW MEMBER</div>
+
+        <input id="newName"
+        style="padding:10px;margin-bottom:10px;width:100%;box-sizing:border-box;"
+        placeholder="Full Name">
+
+        <input id="newRank"
+        style="padding:10px;width:100%;box-sizing:border-box;"
+        placeholder="Rank">
+
+        <div class="modal-actions">
+            <button class="modal-btn btn-close"
+            onclick="closeAddModal()">CANCEL</button>
+
+            <button class="modal-btn btn-copy"
+            onclick="confirmAddMember()">ADD</button>
+        </div>
+    </div>
+</div>
+    <div class="modal-overlay" id="resetModal">
+    <div class="modal-content">
+        <div class="modal-header">⚠ WARNING</div>
+
+        <div style="
+        text-align:center;
+        padding:20px;
+        font-size:16px;
+        color:#222;">
+        Reset all attendance?
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn btn-close"
+            onclick="closeResetModal()">CANCEL</button>
+
+            <button class="modal-btn btn-copy"
+            onclick="confirmReset()">RESET</button>
+        </div>
+    </div>
+</div>
     <div id="customToast" class="toast-notification">
         <span id="toastMessage">ALERT</span>
     </div>
 
 <script>
-    const MASTER_KEY = "te._.nasr";
+  let currentRole = "viewer";
+    const USERS = {
+    "te._.nasr": "admin",
+    "BONITO_LEADER": "admin",
+    "BONITO_MEMBER": "viewer"
+};
 
     // 🔊 مؤثرات صوتية تكتيكية خفيفة ومحترفة
     const audioClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -562,31 +767,57 @@
     function playSuccess() { audioSuccess.currentTime = 0; audioSuccess.play().catch(e=>{}); }
 
     const firebaseConfig = {
-        databaseURL: "https://bonito-attendance-default-rtdb.firebaseio.com/" 
-    };
+    apiKey: "XXX",
+    authDomain: "XXX",
+    databaseURL: "https://bonito-attendance-default-rtdb.firebaseio.com/",
+    projectId: "XXX",
+};
     
     firebase.initializeApp(firebaseConfig);
     const dbRef = firebase.database().ref("patrol_attendance");
+    dbRef.on("value", (snapshot) => {
+    const data = snapshot.val();
+
+    if (data) {
+        localDB = data;
+    } else {
+        localDB = defaultMembers;
+    }
+
+    buildDashboard();
+});
+    setTimeout(() => {
+    const loader = document.getElementById('loadingScreen');
+    if (loader) loader.style.display = 'none';
+}, 4000);
 
     const defaultMembers = [
-        { name: "⭐ Abanoub Ashraf", rank: "PL", status: true, reason: "" },
-        { name: "⭐ Ireny Alfons", rank: "APL", status: true, reason: "" },
-        { name: "Bavly Samir", rank: "", status: true, reason: "" },
-        { name: "Gevara Michil", rank: "", status: true, reason: "" },
-        { name: "Kirollos Ehab", rank: "", status: true, reason: "" },
-        { name: "Besada Hany", rank: "", status: true, reason: "" },
-        { name: "Thomas Micheal", rank: "", status: true, reason: "" },
-        { name: "Ireny Sameh", rank: "", status: true, reason: "" },
-        { name: "Lusinda Waleed", rank: "", status: true, reason: "" },
-        { name: "Merna Maged", rank: "", status: true, reason: "" },
-        { name: "Jessica Waleed", rank: "", status: true, reason: "" },
-        { name: "Marina Magdy", rank: "", status: true, reason: "" },
-        { name: "Litsa Hany", rank: "", status: true, reason: "" },
-        { name: "Maria Bassem", rank: "", status: true, reason: "" },
-        { name: "Ereny Ashraf", rank: "", status: true, reason: "" }
+        { name: "⭐ Abanoub Ashraf", rank: "PL", status: true, reason: "", photo: "" },
+        { name: "⭐ Ireny Alfons", rank: "APL", status: true, reason: "", photo: "" },
+        { name: "Bavly Samir", rank: "", status: true, reason: "", photo: "" },
+        { name: "Gevara Michil", rank: "", status: true, reason: "", photo: "" },
+        { name: "Kirollos Ehab", rank: "", status: true, reason: "", photo: "" },
+        { name: "Besada Hany", rank: "", status: true, reason: "", photo: "" },
+        { name: "Thomas Micheal", rank: "", status: true, reason: "", photo: "" },
+        { name: "Ireny Sameh", rank: "", status: true, reason: "", photo: "" },
+        { name: "Lusinda Waleed", rank: "", status: true, reason: "", photo: "" },
+        { name: "Merna Maged", rank: "", status: true, reason: "", photo: "" },
+        { name: "Jessica Waleed", rank: "", status: true, reason: "", photo: "" },
+        { name: "Marina Magdy", rank: "", status: true, reason: "", photo: "" },
+        { name: "Litsa Hany", rank: "", status: true, reason: "", photo: "" },
+        { name: "Youanna Sameh", rank: "", status: true, reason: "", photo: "" },
+        { name: "Maria Bassem", rank: "", status: true, reason: "", photo: "" },
+        { name: "Ereny Ashraf", rank: "", status: true, reason: "", photo: "" }
     ];
 
     let localDB = [];
+
+// 🔥 Restore backup from localStorage (if exists)
+const backup = localStorage.getItem("bonito_backup");
+
+if (backup && (!localDB || localDB.length === 0)) {
+    localDB = JSON.parse(backup);
+}
 
     // دالة التنبيه الاحترافية بديلة الـ alert()
     function showToast(message, isSuccess = false) {
@@ -605,30 +836,33 @@
     }
 
     function triggerAuth() {
-        const inputKey = document.getElementById('secretKey').value.trim();
-        if (inputKey === MASTER_KEY) {
-            playSuccess();
-            document.getElementById('authScreen').style.display = 'none';
-            if(window.innerWidth >= 900) {
-                document.getElementById('scoutBoard').style.display = 'grid';
-            } else {
-                document.getElementById('scoutBoard').style.display = 'flex';
-            }
-            
-            dbRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    localDB = data;
-                } else {
-                    localDB = defaultMembers;
-                    dbRef.set(defaultMembers);
-                }
-                buildDashboard();
-            });
-        } else {
-            showToast("SECURITY VIOLATION: INVALID SECURITY KEY", false);
-        }
+    const inputKey = document.getElementById('secretKey').value.trim();
+
+    if (USERS[inputKey]) {
+
+    currentRole = USERS[inputKey];
+
+    playSuccess();
+    document.getElementById('authScreen').style.display = 'none';
+
+    if (window.innerWidth >= 900) {
+        document.getElementById('scoutBoard').style.display = 'grid';
+    } else {
+        document.getElementById('scoutBoard').style.display = 'flex';
     }
+
+    if (currentRole === "viewer") {
+        document.querySelector(".add-gold").style.display = "none";
+        document.querySelector(".reset-btn").style.display = "none";
+        document.getElementById("saveBtn").style.display = "none";
+        document.getElementById("reportBtn").style.display = "none";
+    }
+
+    updateAll();
+} else {
+        showToast("INVALID ACCESS KEY", false);
+    }
+}
 
     window.addEventListener('resize', () => {
         if(document.getElementById('scoutBoard').style.display !== 'none' && document.getElementById('scoutBoard').style.display !== '') {
@@ -645,8 +879,8 @@
         const absContainer = document.getElementById('absentContainer');
         const searchInput = document.getElementById('searchBar').value.toLowerCase().trim();
         
-        presContainer.innerHTML = '';
-        absContainer.innerHTML = '';
+        presContainer.replaceChildren();
+absContainer.replaceChildren();
 
         let presentCount = 0;
 
@@ -655,21 +889,32 @@
             if(member.rank) displayLabel += ` (${member.rank})`;
 
             if(searchInput !== "" && !displayLabel.toLowerCase().includes(searchInput)) {
-                if (member.status) presentCount++;
-                return;
-            }
+    return;
+}
 
             const itemHtml = document.createElement('div');
             itemHtml.className = 'member-item';
             itemHtml.innerHTML = `
-                <div class="member-row">
-                    <button class="delete-member-btn" onclick="deleteMember(${index})">✕</button>
-                    <div class="member-tag">${displayLabel}</div>
-                    <div class="slider-slot ${member.status ? 'is-present' : 'is-absent'}" onclick="shiftToggle(${index})">
-                        <div class="slider-fill"></div>
-                        <div class="slider-knob"></div>
-                    </div>
-                </div>
+<div class="member-row">
+
+    <button class="delete-member-btn" onclick="deleteMember(${index})">✕</button>
+
+    <img 
+onclick="setPhoto(${index})"
+src="${member.photo && member.photo !== '' 
+    ? member.photo 
+    : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:8px;border:2px solid #222;cursor:pointer;">
+
+    <div class="member-tag">${displayLabel}</div>
+
+    <div class="slider-slot ${member.status ? 'is-present' : 'is-absent'}"
+        onclick="shiftToggle(${index})">
+        <div class="slider-fill"></div>
+        <div class="slider-knob"></div>
+    </div>
+
+</div>
                 ${!member.status ? `<input type="text" class="reason-box" placeholder="REASON FOR ABSENCE..." value="${member.reason || ''}" onchange="writeReason(${index}, this.value)">` : ''}
             `;
 
@@ -702,91 +947,119 @@
     }
 
     function shiftToggle(idx) {
+      if (currentRole !== "admin") {
+    showToast("NO PERMISSION", false);
+    return;
+}
         playClick();
         localDB[idx].status = !localDB[idx].status;
         if(localDB[idx].status) localDB[idx].reason = ""; 
-        dbRef.set(localDB);
+        updateAll();
     }
 
     function writeReason(idx, txt) {
+      if (currentRole !== "admin") {
+    showToast("NO PERMISSION", false);
+    return;
+}
         localDB[idx].reason = txt;
-        dbRef.set(localDB);
+        updateAll();
     }
 
-    function addNewMember() {
-        playClick();
-        const fullName = prompt("ENTER OPERATOR FULL NAME:");
-        if (!fullName || fullName.trim() === "") return;
-        
-        const rank = prompt("ENTER RANK (LEAVE EMPTY IF NONE):");
-        
-        localDB.push({
-            name: fullName.trim(),
-            rank: rank ? rank.trim() : "",
-            status: true,
-            reason: ""
-        });
-        
-        dbRef.set(localDB);
-        showToast(`ADDED ${fullName.toUpperCase()} TO ACTIVE ROSTER`, true);
+function closeAddModal() {
+    document.getElementById("addMemberModal").style.display = "none";
+}
+
+function confirmAddMember() {
+
+    const fullName =
+    document.getElementById("newName").value.trim();
+
+    const rank =
+    document.getElementById("newRank").value.trim();
+
+    if(fullName === "") {
+        showToast("ENTER MEMBER NAME", false);
+        return;
     }
+
+    localDB.push({
+        name: fullName,
+        rank: rank,
+        status: true,
+        reason: "",
+        photo: ""
+    });
+
+    updateAll();
+
+    document.getElementById("newName").value = "";
+    document.getElementById("newRank").value = "";
+
+    closeAddModal();
+
+    showToast("✅ MEMBER ADDED", true);
+}
 
     function deleteMember(idx) {
+      if (currentRole !== "admin") {
+    showToast("NO PERMISSION", false);
+    return;
+}
         playClick();
-        const check = confirm(`ARE YOU SURE YOU WANT TO REMOVE: ${localDB[idx].name}?`);
-        if(check) {
-            const removedName = localDB[idx].name;
-            localDB.splice(idx, 1);
-            dbRef.set(localDB);
-            showToast(`REMOVED ${removedName.toUpperCase()} FROM DATABASE`, false);
-        }
+        showToast(`CLICK AGAIN TO CONFIRM DELETE: ${localDB[idx].name}`, false);
+
+localDB[idx]._pendingDelete = true;
+return
+
     }
 
     function triggerMassReset() {
-        playClick();
-        const verify = confirm("⚡ EXECUTE SYSTEM MASS RESET? ALL MEMBERS WILL BE MARKED AS PRESENT.");
-        if(verify) {
-            localDB.forEach(m => {
-                m.status = true;
-                m.reason = "";
-            });
-            dbRef.set(localDB);
-            playSuccess();
-            showToast("ALL OPERATORS RESTORED TO ACTIVE STATUS", true);
-        }
-    }
+    document.getElementById("resetModal").style.display = "flex";
+}
+
+function closeResetModal() {
+    document.getElementById("resetModal").style.display = "none";
+}
+
+function confirmReset() {
+
+    localDB.forEach(member => {
+        member.status = true;
+        member.reason = "";
+    });
+
+    updateAll();
+
+    closeResetModal();
+
+    showToast("⚡ ATTENDANCE RESET", true);
+}
 
     function fireReport() {
-        playClick();
-        let presentNum = 0;
-        localDB.forEach(m => { if(m.status) presentNum++; });
 
-        let reportStructure = `====================================\n`;
-        reportStructure += `   BONITO PATROL - FORCE REPORT\n`;
-        reportStructure += `   DATE: ${new Date().toLocaleDateString()}\n`;
-        reportStructure += `====================================\n`;
-        reportStructure += `TOTAL FORCE      :: ${localDB.length}\n`;
-        reportStructure += `FORCE ON GROUND  :: ${presentNum}\n`;
-        reportStructure += `ABSENT MEMBERS   :: ${localDB.length - presentNum}\n`;
-        reportStructure += `MISSION READINESS:: ${localDB.length > 0 ? Math.round((presentNum / localDB.length) * 100) : 0}%\n`;
-        reportStructure += `------------------------------------\n`;
-        reportStructure += `DETAILED ROSTER:\n`;
+let report = "🟢 تمام طليعة BONITO\n";
+report += "📅 " + new Date().toLocaleDateString() + "\n\n";
 
-        localDB.forEach((m, idx) => {
-            let num = String(idx + 1).padStart(2, '0');
-            let nameAndRank = m.name + (m.rank ? ` (${m.rank})` : '');
-            if (m.status) {
-                reportStructure += `[${num}] ${nameAndRank} --> PRESENT\n`;
-            } else {
-                let reasonTxt = m.reason ? m.reason : "NO REASON SPECIFIED";
-                reportStructure += `[${num}] ${nameAndRank} --> ABSENT (${reasonTxt})\n`;
-            }
-        });
-        reportStructure += `====================================`;
+report += "✅ القوة على الأرض:\n";
 
-        document.getElementById('reportTextarea').value = reportStructure;
-        document.getElementById('reportModal').style.display = 'flex';
+let count = 1;
+
+localDB.forEach(member => {
+    if(member.status){
+        report += count + "- " + member.name + "\n";
+        count++;
     }
+});
+
+report += "\n";
+report += "👥 القوة الكاملة: " + localDB.length + "\n";
+report += "🟢 الحاضر: " + (count-1) + "\n";
+report += "🔴 الغائب: " + (localDB.length-(count-1));
+
+document.getElementById('reportTextarea').value = report;
+document.getElementById('reportModal').style.display = 'flex';
+}
 
     function closeModal() {
         playClick();
@@ -799,13 +1072,274 @@
         textarea.setSelectionRange(0, 99999);
         
         try {
-            document.execCommand('copy');
-            playSuccess();
-            showToast('REPORT COPIED TO CLIPBOARD SUCCESSFUL', true);
+            navigator.clipboard.writeText(textarea.value)
+    .then(() => {
+        playSuccess();
+        showToast('REPORT COPIED TO CLIPBOARD SUCCESSFUL', true);
+    })
+    .catch(() => {
+        showToast('FAILED TO COPY TERMINAL OUTPUT', false);
+    });
         } catch (err) {
             showToast('FAILED TO COPY TERMINAL OUTPUT', false);
         }
     }
+    function saveDailyLog() {if (currentRole !== "admin") {
+    showToast("NO PERMISSION", false);
+    return;
+}
+    const date = new Date().toLocaleDateString();
+
+    const log = {
+    date: date,
+    total: localDB.length,
+
+    present: localDB
+        .filter(m => m.status)
+        .map(m => ({
+            name: m.name,
+            rank: m.rank
+        })),
+
+    absent: localDB
+        .filter(m => !m.status)
+        .map(m => ({
+            name: m.name,
+            rank: m.rank,
+            reason: m.reason || ""
+        }))
+};
+
+firebase.database().ref("daily_logs").push(log);
+
+    showToast("تم حفظ سجل اليوم ✔️", true);
+}
+function setPhoto(idx) {
+  if (currentRole !== "admin") {
+    showToast("NO PERMISSION", false);
+    return;
+}
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = function () {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                // تصغير الصورة
+                const maxSize = 300;
+                let w = img.width;
+                let h = img.height;
+
+                if (w > h) {
+                    if (w > maxSize) {
+                        h *= maxSize / w;
+                        w = maxSize;
+                    }
+                } else {
+                    if (h > maxSize) {
+                        w *= maxSize / h;
+                        h = maxSize;
+                    }
+                }
+
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(img, 0, 0, w, h);
+
+                const compressed = canvas.toDataURL("image/jpeg", 0.4);
+
+                localDB[idx].photo = compressed;
+dbRef.set(localDB); // حفظ مباشر قوي
+buildDashboard();
+
+                showToast("IMAGE SAVED (OPTIMIZED) ✔️", true);
+            };
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    input.click();
+}
+window.addEventListener("load", function () {
+    document.getElementById("loadingScreen").style.display = "none";
+});
+function updateAll() {
+    dbRef.set(localDB);
+    buildDashboard();
+}
+function sendWhatsapp() {
+
+const text =
+encodeURIComponent(document.getElementById('reportTextarea').value);
+
+window.open(
+"https://wa.me/?text=" + text,
+"_blank"
+);
+
+}
+function openAddModal(){
+document.getElementById("addMemberModal").style.display="flex";
+}
+function openHistory() {
+
+firebase.database()
+.ref("daily_logs")
+.once("value")
+.then(snapshot => {
+
+let html = "";
+
+snapshot.forEach(day => {
+
+const key = day.key;
+const data = day.val();
+
+html += `
+<div class="history-item" onclick="showHistoryDay('${key}')">
+📅 ${data.date}
+</div>
+`;
+
+});
+
+document.getElementById("historyContainer").innerHTML = html;
+
+document.getElementById("reportTextarea").style.display = "none";
+document.getElementById("reportModal").style.display = "flex";
+document.getElementById("reportTextarea").value = "";
+
+});
+
+}
+function showHistoryDay(key){
+
+firebase.database()
+.ref("daily_logs/" + key)
+.once("value")
+.then(snapshot => {
+
+const data = snapshot.val();
+
+let report = "";
+
+report += "📅 " + data.date + "\n\n";
+
+report += "🟢 الحاضر:\n";
+
+(data.present || []).forEach(member=>{
+report += "- " + member.name + "\n";
+});
+
+report += "\n🔴 الغائب:\n";
+
+(data.absent || []).forEach(member=>{
+
+report += "- " + member.name;
+
+if(member.reason){
+report += " (" + member.reason + ")";
+}
+
+report += "\n";
+
+});
+
+document.getElementById("historyContainer").innerHTML = "";
+
+const box = document.getElementById("reportTextarea");
+box.style.display = "block";
+box.value = report;
+box.scrollTop = 0;
+
+});
+
+}
+function updateAll() {
+    buildDashboard();
+
+    // 1. Firebase save (أساسي)
+    dbRef.set(localDB);
+
+    // 2. Local backup (احتياطي قوي)
+    localStorage.setItem("bonito_backup", JSON.stringify(localDB));
+}
+localStorage.setItem("bonito_backup", JSON.stringify(localDB));
+function deleteAllHistory() {
+    if (currentRole !== "admin") {
+        showToast("NO PERMISSION", false);
+        return;
+    }
+
+    showToast("CLICK AGAIN TO CONFIRM DELETE HISTORY", false);
+
+if (!window._historyConfirm) {
+    window._historyConfirm = true;
+
+    setTimeout(() => {
+        window._historyConfirm = false;
+    }, 3000);
+
+    return;
+}
+
+    firebase.database().ref("daily_logs").remove()
+    .then(() => {
+        document.getElementById("historyContainer").innerHTML = "";
+        showToast("ALL HISTORY DELETED ✔️", true);
+    })
+    .catch(() => {
+        showToast("FAILED TO DELETE HISTORY", false);
+    });
+}
+function deleteMember(idx) {
+    if (currentRole !== "admin") {
+        showToast("NO PERMISSION", false);
+        return;
+    }
+
+    playClick();
+
+    if (!localDB[idx]._pendingDelete) {
+        showToast(`CLICK AGAIN TO CONFIRM DELETE: ${localDB[idx].name}`, false);
+        localDB[idx]._pendingDelete = true;
+
+        setTimeout(() => {
+            if (localDB[idx]) {
+                localDB[idx]._pendingDelete = false;
+            }
+        }, 3000);
+
+        return;
+    }
+    
+    firebase.database().ref("daily_logs").remove()
+    .then(() => {
+        showToast("HISTORY DELETED SUCCESSFULLY", true);
+    })
+    .catch(() => {
+        showToast("ERROR DELETING HISTORY", false);
+    });
+
+    const removedName = localDB[idx].name;
+    localDB.splice(idx, 1);
+    updateAll();
+
+    showToast(`REMOVED ${removedName.toUpperCase()}`, false);
+}
 </script>
 </body>
 </html>

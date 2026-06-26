@@ -40,7 +40,6 @@
             transition: background-color 0.5s ease, box-shadow 0.5s ease;
         }
 
-        /* 🟢 تأثير التنفس الضوئي الذكي للوحة بناءً على حالة الجاهزية */
         body.system-ready {
             box-shadow: inset 0 0 60px rgba(0, 255, 102, 0.05);
         }
@@ -53,7 +52,6 @@
             100% { box-shadow: inset 0 0 80px rgba(255, 51, 51, 0.12); }
         }
 
-        /* 🔐 شاشة الدخول التكتيكية الذهبية */
         .auth-container {
             background: var(--board-color);
             border: 2px solid var(--gold);
@@ -72,44 +70,102 @@
             text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
             letter-spacing: 2px;
         }
-        .auth-input {
-            width: 85%;
-            background: #fff;
-            border: 2px solid var(--red);
-            color: var(--red);
-            padding: 12px;
-            font-size: 15px;
-            text-align: center;
-            margin: 25px 0;
-            letter-spacing: 2px;
-            font-family: 'JetBrains Mono', monospace;
-            box-shadow: 0 0 10px var(--border-glow-red);
+
+        /* OTP boxes */
+        .otp-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 28px 0 20px;
         }
-        .auth-input:focus {
-            outline: none;
+        .otp-box {
+            width: 54px;
+            height: 62px;
+            background: #fff;
+            border: 2px solid #444;
+            border-radius: 14px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            color: #222;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .otp-box.filled {
             border-color: var(--gold);
             color: var(--gold);
-            box-shadow: 0 0 10px var(--border-glow-gold);
+            box-shadow: 0 0 8px var(--border-glow-gold);
         }
-        .auth-btn {
-            background: #000;
-            color: var(--gold);
-            border: 2px solid var(--gold);
-            padding: 12px;
-            width: 90%;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s ease;
+        .otp-box.error {
+            border-color: var(--red);
+            box-shadow: 0 0 10px var(--border-glow-red);
+            animation: shake 0.35s ease;
         }
-        .auth-btn:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-6px); }
+            40%      { transform: translateX(6px); }
+            60%      { transform: translateX(-4px); }
+            80%      { transform: translateX(4px); }
         }
 
-        /* 🪖 اللوحة الرئيسية المحسنة للموبايل والكمبيوتر */
+        /* hint message */
+        .auth-hint {
+            min-height: 40px;
+            font-size: 12px;
+            color: var(--red);
+            font-family: 'JetBrains Mono', monospace;
+            margin: 0 0 10px;
+            padding: 0 10px;
+            line-height: 1.6;
+        }
+
+        /* lock screen */
+        .lock-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0 5px;
+        }
+        .lock-icon {
+            font-size: 42px;
+            animation: pulse 1.5s infinite;
+        }
+        .lock-label {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--red);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .lock-sub {
+            font-size: 11px;
+            color: #888;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+        }
+        .lock-counter {
+            font-size: 56px;
+            font-weight: 900;
+            color: var(--red);
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 18px rgba(255,51,51,0.4);
+            line-height: 1;
+            min-width: 70px;
+        }
+        .lock-footer {
+            font-size: 10px;
+            color: #555;
+            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
         .scout-board {
             display: none;
             width: 100%;
@@ -150,11 +206,10 @@
             font-size: 20px; 
             font-weight: 700; 
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.25); /* توهج ذهبي هادئ */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
         }
         .header-main p { margin: 5px 0 0 0; color: #555; font-size: 10px; letter-spacing: 1px; }
 
-        /* 🔍 شريط البحث وأدوات الإدارة المحسنة المقاسات */
         .utilities-row {
             display: flex;
             flex-wrap: wrap;
@@ -187,7 +242,6 @@
         }
         .util-btn:hover { background: #fff; color: #000; border-color: #fff; }
         
-        /* زر الإضافة الذهبي المحدث */
         .util-btn.add-gold {
             border: 1px solid var(--gold);
             color: var(--gold);
@@ -200,11 +254,10 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    border-radius: 25px; /* 🔥 كيرڤ للعمود نفسه */
-    overflow: hidden;    /* عشان المحتوى يلتزم بالشكل */
+    border-radius: 25px;
+    overflow: hidden;
 }
 
-/* كيرڤ لعنوان كل رستر */
 .col-title {
     text-align: center;
     padding: 10px;
@@ -213,10 +266,9 @@
     text-transform: uppercase;
     font-size: 13px;
     letter-spacing: 1px;
-    border-radius: 25px 25px 0 0; /* 🔥 أعلى الكارت */
+    border-radius: 25px 25px 0 0;
 }
 
-/* كيرڤ أسفل الكارت لو محتاج */
 #presentContainer,
 #absentContainer {
     border-radius: 0 0 25px 25px;
@@ -232,7 +284,6 @@
         .col-title.pres { background: var(--green); color: #000; }
         .col-title.abs { background: var(--red); color: #fff; }
 
-        /* خ خانات الأسماء الثابتة لمنع التمدد الرأسي */
         .member-item {
     background: #ffffff;
     border: 1px solid #1c1c1c;
@@ -242,7 +293,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-radius: 25px; /* 🔥 كيرڤ واضح للكارڈ */
+    border-radius: 25px;
 }
         .member-item:hover { border-color: #333; }
 
@@ -276,7 +327,6 @@
         }
         .delete-member-btn:hover { color: var(--red); }
 
-        /* السلايدر التكتيكي المحكم */
         .slider-slot {
     width: 65px;
     height: 22px;
@@ -285,8 +335,8 @@
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
-    border-radius: 9999px; /* 🔥 كيرڤ كامل */
-    overflow: hidden;      /* مهم عشان الحركة تبقى ناعمة */
+    border-radius: 9999px;
+    overflow: hidden;
 }
 
 .slider-fill {
@@ -304,7 +354,7 @@
     position: absolute;
     top: 0;
     transition: left 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border-radius: 9999px; /* 🔥 دائري بالكامل */
+    border-radius: 9999px;
 }
         .is-present .slider-knob { left: 0px; background: var(--green); box-shadow: 0 0 6px rgba(0, 255, 102, 0.4); }
         .is-absent .slider-knob { left: 37px; background: var(--red); box-shadow: 0 0 6px rgba(255, 51, 51, 0.4); }
@@ -322,7 +372,6 @@
         }
         .reason-box:focus { outline: none; border-color: var(--red); }
 
-        /* 🎛️ اللوحة المركزية (المقاييس الرقمية) */
         .center-panel {
             display: flex;
             flex-direction: column;
@@ -390,7 +439,6 @@
             box-sizing: border-box;
         }
         
-        /* تحديث مقياس الـ TOTAL ليأخذ اللون الذهبي الفخم */
         .crypto-box.tot { border-color: var(--gold); box-shadow: 0 0 5px var(--border-glow-gold); }
         .crypto-box.pre { border-color: var(--green); box-shadow: 0 0 5px var(--border-glow-green); }
         .crypto-box.abs { border-color: var(--red); box-shadow: 0 0 5px var(--border-glow-red); }
@@ -419,7 +467,6 @@
         }
         .report-btn:hover { background: #fff; color: #000; }
 
-        /* 🚨 نظام التنبيهات المدمج المحدث بالوهج الذهبي للعمليات الناجحة */
         .toast-notification {
             position: fixed;
             bottom: -100px;
@@ -447,7 +494,6 @@
         }
         .toast-notification.show { bottom: 30px; }
 
-        /* 📋 نافذة التقرير الاحترافية المحدثة باللون الذهبي */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -571,7 +617,6 @@ select,
     --ui-radius: 20px;
 }
 
-/* 🔥 توحيد الحواف لكل العناصر الأساسية */
 .util-btn,
 .member-item,
 .search-box,
@@ -627,33 +672,43 @@ LOADING SYSTEM...
 </div>
 
     <div class="auth-container" id="authScreen">
-<h1>BONITO</h1>
+        <h1>BONITO</h1>
+        <div style="margin-top:15px;color:#ffd700;font-size:18px;font-weight:bold;letter-spacing:2px;">
+            🐺 الذئب الذي لا ينام
+        </div>
+        <p style="color:#555;font-size:11px;margin-top:8px;letter-spacing:1px;">LIVE ATTENDANCE v4.3</p>
 
-<div style="
-margin-top:15px;
-color:#ffd700;
-font-size:18px;
-font-weight:bold;
-letter-spacing:2px;
-">
-🐺 الذئب الذي لا ينام
-</div>
+        <!-- OTP entry -->
+        <div id="otpSection">
+            <p style="color:#888;font-size:11px;margin:18px 0 0;letter-spacing:1px;">4-DIGIT ACCESS CODE</p>
 
-<p style="
-color:#888;
-font-size:12px;
-margin-top:8px;">
-ENTER THE 4-DIGIT ACCESS CODE
-</p>
-        <p style="color:#555; font-size:11px; margin-top:5px; letter-spacing:1px;">LIVE ATTENDANCE v4.3</p>
-        <div id="authForm">
-            <input
-type="password"
-maxlength="4"
-inputmode="numeric"
-pattern="[0-9]*" class="auth-input" id="secretKey" placeholder="ENTER SYSTEM KEY">
-            <br>
-            <button class="auth-btn" onclick="triggerAuth()">AUTHENTICATE</button>
+            <!-- Hidden real input that captures typing on all devices -->
+            <input id="realOtpInput"
+                type="password"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                maxlength="4"
+                autocomplete="one-time-code"
+                style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;"
+                oninput="onRealInput(this.value)">
+
+            <!-- Visual boxes — clicking any opens keyboard -->
+            <div class="otp-row" onclick="focusOTP()">
+                <div class="otp-box" id="o0"></div>
+                <div class="otp-box" id="o1"></div>
+                <div class="otp-box" id="o2"></div>
+                <div class="otp-box" id="o3"></div>
+            </div>
+            <div class="auth-hint" id="authHint"></div>
+        </div>
+
+        <!-- Lock screen -->
+        <div class="lock-screen" id="lockScreen">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-label">LOCKED</div>
+            <div class="lock-sub">Try again in</div>
+            <div class="lock-counter" id="lockCounter">30</div>
+            <div class="lock-footer">4-DIGIT ACCESS CODE</div>
         </div>
     </div>
 
@@ -778,7 +833,6 @@ WHATSAPP
 
 let loginAttempts = 0;
 
-    // 🔊 مؤثرات صوتية تكتيكية خفيفة ومحترفة
     const audioClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     const audioSuccess = new Audio('https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3');
     
@@ -834,14 +888,11 @@ let loginAttempts = 0;
 
     let localDB = [];
 
-// 🔥 Restore backup from localStorage (if exists)
 const backup = localStorage.getItem("bonito_backup");
-
 if (backup && (!localDB || localDB.length === 0)) {
     localDB = JSON.parse(backup);
 }
 
-    // دالة التنبيه الاحترافية بديلة الـ alert()
     function showToast(message, isSuccess = false) {
         const toast = document.getElementById('customToast');
         if (isSuccess) {
@@ -857,60 +908,132 @@ if (backup && (!localDB || localDB.length === 0)) {
         }, 3500);
     }
 
-    function triggerAuth(){
+    // ======= OTP AUTH SYSTEM =======
+    let otpValue = "";
+    let lockTimer = null;
 
-const code=document.getElementById("secretKey").value.trim();
+    function initOTP() {
+        focusOTP();
+    }
 
-if(USERS[code]){
+    function focusOTP() {
+        const inp = document.getElementById("realOtpInput");
+        if (inp) {
+            inp.removeAttribute("readonly");
+            inp.focus();
+        }
+    }
 
-currentRole=USERS[code];
+    // Called every time the hidden input changes
+    function onRealInput(val) {
+        // Keep only digits
+        const digits = val.replace(/\D/g, "").slice(0, 4);
+        // Sync back
+        document.getElementById("realOtpInput").value = digits;
+        otpValue = digits;
+        renderOTP();
+        if (digits.length === 4) {
+            setTimeout(checkCode, 150);
+        }
+    }
 
-playSuccess();
+    // Keyboard backspace support
+    document.addEventListener("keydown", function(e) {
+        if (document.getElementById("lockScreen").style.display === "flex") return;
+        if (document.getElementById("authScreen").style.display === "none") return;
+        // Keep focus on hidden input
+        if (e.key !== "Tab") {
+            const inp = document.getElementById("realOtpInput");
+            if (inp && document.activeElement !== inp) inp.focus();
+        }
+    });
 
-document.getElementById("authScreen").style.display="none";
+    function renderOTP() {
+        for (let i = 0; i < 4; i++) {
+            const box = document.getElementById("o" + i);
+            box.classList.remove("error");
+            if (i < otpValue.length) {
+                box.textContent = "•";
+                box.classList.add("filled");
+            } else {
+                box.textContent = "";
+                box.classList.remove("filled");
+            }
+        }
+    }
 
-if(window.innerWidth>=900){
-document.getElementById("scoutBoard").style.display="grid";
-}else{
-document.getElementById("scoutBoard").style.display="flex";
-}
+    function checkCode() {
+        const code = otpValue;
 
-if(currentRole==="viewer"){
-document.querySelector(".add-gold").style.display="none";
-document.querySelector(".reset-btn").style.display="none";
-document.getElementById("saveBtn").style.display="none";
-document.getElementById("reportBtn").style.display="none";
-}
+        if (USERS[code]) {
+            // ✅ SUCCESS
+            currentRole = USERS[code];
+            playSuccess();
+            document.getElementById("authScreen").style.display = "none";
+            const board = document.getElementById("scoutBoard");
+            board.style.display = window.innerWidth >= 900 ? "grid" : "flex";
 
-updateAll();
-return;
-}
+            if (currentRole === "viewer") {
+                document.querySelector(".add-gold").style.display  = "none";
+                document.querySelector(".reset-btn").style.display = "none";
+                document.getElementById("saveBtn").style.display   = "none";
+                document.getElementById("reportBtn").style.display = "none";
+            }
+            updateAll();
+            return;
+        }
 
-loginAttempts++;
+        // ❌ WRONG — shake + clear
+        playClick();
+        for (let i = 0; i < 4; i++) {
+            document.getElementById("o" + i).classList.add("error");
+        }
+        setTimeout(() => {
+            otpValue = "";
+            document.getElementById("realOtpInput").value = "";
+            renderOTP();
+        }, 400);
 
-if(loginAttempts===1){
-showToast("❌ WRONG CODE",false);
-}
+        loginAttempts++;
+        const hint = document.getElementById("authHint");
 
-else if(loginAttempts===2){
-showToast("💡 HINT: THE WOLF NEVER SLEEPS",false);
-}
+        if (loginAttempts === 1) {
+            hint.innerHTML = "❌ رمز غير صحيح.<br>💡 تلميح: الرقم مرتبط بتاريخ مهم.";
+        } else if (loginAttempts === 2) {
+            hint.innerHTML = "❌ ما زالت غير صحيحة.<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام.";
+        } else {
+            loginAttempts = 0;
+            hint.innerHTML = "";
+            startLock(30);
+        }
+    }
 
-else{
+    function startLock(seconds) {
+        const otp  = document.getElementById("otpSection");
+        const lock = document.getElementById("lockScreen");
+        const ctr  = document.getElementById("lockCounter");
 
-showToast("💡 FINAL HINT: YEAR OF THE SCOUT MOVEMENT",false);
+        otp.style.display  = "none";
+        lock.style.display = "flex";
+        ctr.textContent    = seconds;
 
-document.getElementById("secretKey").disabled=true;
+        let remaining = seconds;
+        lockTimer = setInterval(() => {
+            remaining--;
+            ctr.textContent = remaining;
+            if (remaining <= 0) {
+                clearInterval(lockTimer);
+                otp.style.display  = "block";
+                lock.style.display = "none";
+                otpValue = "";
+                document.getElementById("realOtpInput").value = "";
+                renderOTP();
+                focusOTP();
+            }
+        }, 1000);
+    }
 
-setTimeout(()=>{
-loginAttempts=0;
-document.getElementById("secretKey").disabled=false;
-document.getElementById("secretKey").value="";
-},10000);
-
-}
-
-}
+    function triggerAuth() { checkCode(); }
 
     window.addEventListener('resize', () => {
         if(document.getElementById('scoutBoard').style.display !== 'none' && document.getElementById('scoutBoard').style.display !== '') {
@@ -928,7 +1051,7 @@ document.getElementById("secretKey").value="";
         const searchInput = document.getElementById('searchBar').value.toLowerCase().trim();
         
         presContainer.replaceChildren();
-absContainer.replaceChildren();
+        absContainer.replaceChildren();
 
         let presentCount = 0;
 
@@ -937,31 +1060,26 @@ absContainer.replaceChildren();
             if(member.rank) displayLabel += ` (${member.rank})`;
 
             if(searchInput !== "" && !displayLabel.toLowerCase().includes(searchInput)) {
-    return;
-}
+                return;
+            }
 
             const itemHtml = document.createElement('div');
             itemHtml.className = 'member-item';
             itemHtml.innerHTML = `
 <div class="member-row">
-
     <button class="delete-member-btn" onclick="deleteMember(${index})">✕</button>
-
     <img 
-onclick="setPhoto(${index})"
-src="${member.photo && member.photo !== '' 
-    ? member.photo 
-    : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
-style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:8px;border:2px solid #222;cursor:pointer;">
-
+        onclick="setPhoto(${index})"
+        src="${member.photo && member.photo !== '' 
+            ? member.photo 
+            : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+        style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:8px;border:2px solid #222;cursor:pointer;">
     <div class="member-tag">${displayLabel}</div>
-
     <div class="slider-slot ${member.status ? 'is-present' : 'is-absent'}"
         onclick="shiftToggle(${index})">
         <div class="slider-fill"></div>
         <div class="slider-knob"></div>
     </div>
-
 </div>
                 ${!member.status ? `<input type="text" class="reason-box" placeholder="REASON FOR ABSENCE..." value="${member.reason || ''}" onchange="writeReason(${index}, this.value)">` : ''}
             `;
@@ -995,10 +1113,10 @@ style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:8p
     }
 
     function shiftToggle(idx) {
-      if (currentRole !== "admin") {
-    showToast("NO PERMISSION", false);
-    return;
-}
+        if (currentRole !== "admin") {
+            showToast("NO PERMISSION", false);
+            return;
+        }
         playClick();
         localDB[idx].status = !localDB[idx].status;
         if(localDB[idx].status) localDB[idx].reason = ""; 
@@ -1006,108 +1124,111 @@ style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:8p
     }
 
     function writeReason(idx, txt) {
-      if (currentRole !== "admin") {
-    showToast("NO PERMISSION", false);
-    return;
-}
+        if (currentRole !== "admin") {
+            showToast("NO PERMISSION", false);
+            return;
+        }
         localDB[idx].reason = txt;
         updateAll();
     }
 
-function closeAddModal() {
-    document.getElementById("addMemberModal").style.display = "none";
-}
-
-function confirmAddMember() {
-
-    const fullName =
-    document.getElementById("newName").value.trim();
-
-    const rank =
-    document.getElementById("newRank").value.trim();
-
-    if(fullName === "") {
-        showToast("ENTER MEMBER NAME", false);
-        return;
+    function closeAddModal() {
+        document.getElementById("addMemberModal").style.display = "none";
     }
 
-    localDB.push({
-        name: fullName,
-        rank: rank,
-        status: true,
-        reason: "",
-        photo: ""
-    });
+    function confirmAddMember() {
+        const fullName = document.getElementById("newName").value.trim();
+        const rank = document.getElementById("newRank").value.trim();
 
-    updateAll();
+        if(fullName === "") {
+            showToast("ENTER MEMBER NAME", false);
+            return;
+        }
 
-    document.getElementById("newName").value = "";
-    document.getElementById("newRank").value = "";
+        localDB.push({
+            name: fullName,
+            rank: rank,
+            status: true,
+            reason: "",
+            photo: ""
+        });
 
-    closeAddModal();
+        updateAll();
 
-    showToast("✅ MEMBER ADDED", true);
-}
+        document.getElementById("newName").value = "";
+        document.getElementById("newRank").value = "";
 
+        closeAddModal();
+
+        showToast("✅ MEMBER ADDED", true);
+    }
+
+    // ✅ FIX 1: deleteMember — تعريف واحد صح، بيشيل العضو بس مش الهيستوري
     function deleteMember(idx) {
-      if (currentRole !== "admin") {
-    showToast("NO PERMISSION", false);
-    return;
-}
+        if (currentRole !== "admin") {
+            showToast("NO PERMISSION", false);
+            return;
+        }
+
         playClick();
-        showToast(`CLICK AGAIN TO CONFIRM DELETE: ${localDB[idx].name}`, false);
 
-localDB[idx]._pendingDelete = true;
-return
+        if (!localDB[idx]._pendingDelete) {
+            showToast(`CLICK AGAIN TO CONFIRM DELETE: ${localDB[idx].name}`, false);
+            localDB[idx]._pendingDelete = true;
+            setTimeout(() => {
+                if (localDB[idx]) localDB[idx]._pendingDelete = false;
+            }, 3000);
+            return;
+        }
 
+        // ✅ بيشيل العضو بس — مش بيمسح الهيستوري
+        const removedName = localDB[idx].name;
+        localDB.splice(idx, 1);
+        updateAll();
+        showToast(`REMOVED: ${removedName.toUpperCase()}`, false);
     }
 
     function triggerMassReset() {
-    document.getElementById("resetModal").style.display = "flex";
-}
+        document.getElementById("resetModal").style.display = "flex";
+    }
 
-function closeResetModal() {
-    document.getElementById("resetModal").style.display = "none";
-}
+    function closeResetModal() {
+        document.getElementById("resetModal").style.display = "none";
+    }
 
-function confirmReset() {
-
-    localDB.forEach(member => {
-        member.status = true;
-        member.reason = "";
-    });
-
-    updateAll();
-
-    closeResetModal();
-
-    showToast("⚡ ATTENDANCE RESET", true);
-}
+    function confirmReset() {
+        localDB.forEach(member => {
+            member.status = true;
+            member.reason = "";
+        });
+        updateAll();
+        closeResetModal();
+        showToast("⚡ ATTENDANCE RESET", true);
+    }
 
     function fireReport() {
+        let report = "🟢 تمام طليعة BONITO\n";
+        report += "📅 " + new Date().toLocaleDateString() + "\n\n";
+        report += "✅ القوة على الأرض:\n";
 
-let report = "🟢 تمام طليعة BONITO\n";
-report += "📅 " + new Date().toLocaleDateString() + "\n\n";
+        let count = 1;
+        localDB.forEach(member => {
+            if(member.status){
+                report += count + "- " + member.name + "\n";
+                count++;
+            }
+        });
 
-report += "✅ القوة على الأرض:\n";
+        report += "\n";
+        report += "👥 القوة الكاملة: " + localDB.length + "\n";
+        report += "🟢 الحاضر: " + (count-1) + "\n";
+        report += "🔴 الغائب: " + (localDB.length-(count-1));
 
-let count = 1;
-
-localDB.forEach(member => {
-    if(member.status){
-        report += count + "- " + member.name + "\n";
-        count++;
+        document.getElementById('reportTextarea').value = report;
+        document.getElementById('reportTextarea').style.display = "block";
+        document.getElementById('historyContainer').innerHTML = "";
+        document.getElementById('reportModal').style.display = 'flex';
     }
-});
-
-report += "\n";
-report += "👥 القوة الكاملة: " + localDB.length + "\n";
-report += "🟢 الحاضر: " + (count-1) + "\n";
-report += "🔴 الغائب: " + (localDB.length-(count-1));
-
-document.getElementById('reportTextarea').value = report;
-document.getElementById('reportModal').style.display = 'flex';
-}
 
     function closeModal() {
         playClick();
@@ -1119,275 +1240,153 @@ document.getElementById('reportModal').style.display = 'flex';
         textarea.select();
         textarea.setSelectionRange(0, 99999);
         
-        try {
-            navigator.clipboard.writeText(textarea.value)
-    .then(() => {
-        playSuccess();
-        showToast('REPORT COPIED TO CLIPBOARD SUCCESSFUL', true);
-    })
-    .catch(() => {
-        showToast('FAILED TO COPY TERMINAL OUTPUT', false);
-    });
-        } catch (err) {
-            showToast('FAILED TO COPY TERMINAL OUTPUT', false);
-        }
+        navigator.clipboard.writeText(textarea.value)
+            .then(() => {
+                playSuccess();
+                showToast('REPORT COPIED TO CLIPBOARD SUCCESSFUL', true);
+            })
+            .catch(() => {
+                showToast('FAILED TO COPY TERMINAL OUTPUT', false);
+            });
     }
-    function saveDailyLog() {if (currentRole !== "admin") {
-    showToast("NO PERMISSION", false);
-    return;
-}
-    const date = new Date().toLocaleDateString();
 
-    const log = {
-    date: date,
-    total: localDB.length,
+    function saveDailyLog() {
+        if (currentRole !== "admin") {
+            showToast("NO PERMISSION", false);
+            return;
+        }
 
-    present: localDB
-        .filter(m => m.status)
-        .map(m => ({
-            name: m.name,
-            rank: m.rank
-        })),
-
-    absent: localDB
-        .filter(m => !m.status)
-        .map(m => ({
-            name: m.name,
-            rank: m.rank,
-            reason: m.reason || ""
-        }))
-};
-
-firebase.database().ref("daily_logs").push(log);
-
-    showToast("تم حفظ سجل اليوم ✔️", true);
-}
-function setPhoto(idx) {
-  if (currentRole !== "admin") {
-    showToast("NO PERMISSION", false);
-    return;
-}
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-
-    input.onchange = function (e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-            const img = new Image();
-            img.src = event.target.result;
-
-            img.onload = function () {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-
-                // تصغير الصورة
-                const maxSize = 300;
-                let w = img.width;
-                let h = img.height;
-
-                if (w > h) {
-                    if (w > maxSize) {
-                        h *= maxSize / w;
-                        w = maxSize;
-                    }
-                } else {
-                    if (h > maxSize) {
-                        w *= maxSize / h;
-                        h = maxSize;
-                    }
-                }
-
-                canvas.width = w;
-                canvas.height = h;
-                ctx.drawImage(img, 0, 0, w, h);
-
-                const compressed = canvas.toDataURL("image/jpeg", 0.4);
-
-                localDB[idx].photo = compressed;
-dbRef.set(localDB); // حفظ مباشر قوي
-buildDashboard();
-
-                showToast("IMAGE SAVED (OPTIMIZED) ✔️", true);
-            };
+        const log = {
+            date: new Date().toLocaleDateString(),
+            total: localDB.length,
+            present: localDB.filter(m => m.status).map(m => ({ name: m.name, rank: m.rank })),
+            absent: localDB.filter(m => !m.status).map(m => ({ name: m.name, rank: m.rank, reason: m.reason || "" }))
         };
 
-        reader.readAsDataURL(file);
-    };
-
-    input.click();
-}
-window.addEventListener("load", function () {
-    document.getElementById("loadingScreen").style.display = "none";
-});
-function updateAll() {
-    dbRef.set(localDB);
-    buildDashboard();
-}
-function sendWhatsapp() {
-
-const text =
-encodeURIComponent(document.getElementById('reportTextarea').value);
-
-window.open(
-"https://wa.me/?text=" + text,
-"_blank"
-);
-
-}
-function openAddModal(){
-document.getElementById("addMemberModal").style.display="flex";
-}
-function openHistory() {
-
-firebase.database()
-.ref("daily_logs")
-.once("value")
-.then(snapshot => {
-
-let html = "";
-
-snapshot.forEach(day => {
-
-const key = day.key;
-const data = day.val();
-
-html += `
-<div class="history-item" onclick="showHistoryDay('${key}')">
-📅 ${data.date}
-</div>
-`;
-
-});
-
-document.getElementById("historyContainer").innerHTML = html;
-
-document.getElementById("reportTextarea").style.display = "none";
-document.getElementById("reportModal").style.display = "flex";
-document.getElementById("reportTextarea").value = "";
-
-});
-
-}
-function showHistoryDay(key){
-
-firebase.database()
-.ref("daily_logs/" + key)
-.once("value")
-.then(snapshot => {
-
-const data = snapshot.val();
-
-let report = "";
-
-report += "📅 " + data.date + "\n\n";
-
-report += "🟢 الحاضر:\n";
-
-(data.present || []).forEach(member=>{
-report += "- " + member.name + "\n";
-});
-
-report += "\n🔴 الغائب:\n";
-
-(data.absent || []).forEach(member=>{
-
-report += "- " + member.name;
-
-if(member.reason){
-report += " (" + member.reason + ")";
-}
-
-report += "\n";
-
-});
-
-document.getElementById("historyContainer").innerHTML = "";
-
-const box = document.getElementById("reportTextarea");
-box.style.display = "block";
-box.value = report;
-box.scrollTop = 0;
-
-});
-
-}
-function updateAll() {
-    buildDashboard();
-
-    // 1. Firebase save (أساسي)
-    dbRef.set(localDB);
-
-    // 2. Local backup (احتياطي قوي)
-    localStorage.setItem("bonito_backup", JSON.stringify(localDB));
-}
-localStorage.setItem("bonito_backup", JSON.stringify(localDB));
-function deleteAllHistory() {
-    if (currentRole !== "admin") {
-        showToast("NO PERMISSION", false);
-        return;
+        firebase.database().ref("daily_logs").push(log)
+            .then(() => showToast("تم حفظ سجل اليوم ✔️", true))
+            .catch(() => showToast("FAILED TO SAVE", false));
     }
 
-    showToast("CLICK AGAIN TO CONFIRM DELETE HISTORY", false);
+    function setPhoto(idx) {
+        if (currentRole !== "admin") {
+            showToast("NO PERMISSION", false);
+            return;
+        }
 
-if (!window._historyConfirm) {
-    window._historyConfirm = true;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
 
-    setTimeout(() => {
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
+                    const maxSize = 300;
+                    let w = img.width, h = img.height;
+
+                    if (w > h) { if (w > maxSize) { h *= maxSize/w; w = maxSize; } }
+                    else        { if (h > maxSize) { w *= maxSize/h; h = maxSize; } }
+
+                    canvas.width = w;
+                    canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    localDB[idx].photo = canvas.toDataURL("image/jpeg", 0.4);
+                    updateAll();
+                    showToast("IMAGE SAVED (OPTIMIZED) ✔️", true);
+                };
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+
+    window.addEventListener("load", function() {
+        document.getElementById("loadingScreen").style.display = "none";
+        initOTP();
+    });
+
+    // ✅ FIX 2: updateAll — تعريف واحد بس
+    function updateAll() {
+        dbRef.set(localDB);
+        try { localStorage.setItem("bonito_backup", JSON.stringify(localDB)); } catch(e) {}
+        buildDashboard();
+    }
+
+    function sendWhatsapp() {
+        const text = encodeURIComponent(document.getElementById('reportTextarea').value);
+        window.open("https://wa.me/?text=" + text, "_blank");
+    }
+
+    function openAddModal() {
+        document.getElementById("addMemberModal").style.display = "flex";
+    }
+
+    function openHistory() {
+        firebase.database().ref("daily_logs").once("value").then(snapshot => {
+            let html = "";
+            snapshot.forEach(day => {
+                html += `<div class="history-item" onclick="showHistoryDay('${day.key}')">📅 ${day.val().date}</div>`;
+            });
+
+            document.getElementById("historyContainer").innerHTML = html;
+            document.getElementById("reportTextarea").style.display = "none";
+            document.getElementById("reportModal").style.display = "flex";
+            document.getElementById("reportTextarea").value = "";
+        });
+    }
+
+    function showHistoryDay(key) {
+        firebase.database().ref("daily_logs/" + key).once("value").then(snapshot => {
+            const data = snapshot.val();
+            let report = "📅 " + data.date + "\n\n";
+            report += "🟢 الحاضر:\n";
+            (data.present || []).forEach(member => { report += "- " + member.name + "\n"; });
+            report += "\n🔴 الغائب:\n";
+            (data.absent || []).forEach(member => {
+                report += "- " + member.name;
+                if(member.reason) report += " (" + member.reason + ")";
+                report += "\n";
+            });
+
+            document.getElementById("historyContainer").innerHTML = "";
+            const box = document.getElementById("reportTextarea");
+            box.style.display = "block";
+            box.value = report;
+            box.scrollTop = 0;
+        });
+    }
+
+    // ✅ FIX 3: deleteAllHistory — تعريف واحد صح مع double-confirm
+    function deleteAllHistory() {
+        if (currentRole !== "admin") {
+            showToast("NO PERMISSION", false);
+            return;
+        }
+
+        if (!window._historyConfirm) {
+            window._historyConfirm = true;
+            showToast("CLICK AGAIN TO CONFIRM DELETE HISTORY", false);
+            setTimeout(() => { window._historyConfirm = false; }, 3000);
+            return;
+        }
+
         window._historyConfirm = false;
-    }, 3000);
-
-    return;
-}
-
-    firebase.database().ref("daily_logs").remove()
-    .then(() => {
-        document.getElementById("historyContainer").innerHTML = "";
-        showToast("ALL HISTORY DELETED ✔️", true);
-    })
-    .catch(() => {
-        showToast("FAILED TO DELETE HISTORY", false);
-    });
-}
-function deleteMember(idx) {
-    if (currentRole !== "admin") {
-        showToast("NO PERMISSION", false);
-        return;
+        firebase.database().ref("daily_logs").remove()
+            .then(() => {
+                document.getElementById("historyContainer").innerHTML = "";
+                showToast("ALL HISTORY DELETED ✔️", true);
+            })
+            .catch(() => showToast("FAILED TO DELETE HISTORY", false));
     }
-
-    playClick();
-
-    if (!localDB[idx]._pendingDelete) {
-        showToast(`CLICK AGAIN TO CONFIRM DELETE: ${localDB[idx].name}`, false);
-        localDB[idx]._pendingDelete = true;
-
-        setTimeout(() => {
-            if (localDB[idx]) {
-                localDB[idx]._pendingDelete = false;
-            }
-        }, 3000);
-
-        return;
-    }
-    
-    firebase.database().ref("daily_logs").remove()
-    .then(() => {
-        showToast("HISTORY DELETED SUCCESSFULLY", true);
-    })
-    .catch(() => {
-        showToast("ERROR DELETING HISTORY", false);
-    });
-
-    const removedName = localDB[idx].name;
-    localDB.splice(idx, 1);
-    updateAll();
-
-    showToast(`REMOVED ${removedName.toUpperCase()}`, false);
-}
 </script>
 </body>
 </html>

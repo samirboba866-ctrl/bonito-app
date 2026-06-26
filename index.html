@@ -857,33 +857,59 @@ if (backup && (!localDB || localDB.length === 0)) {
         }, 3500);
     }
 
-    function triggerAuth() {
-    const inputKey = document.getElementById('secretKey').value.trim();
+    function triggerAuth(){
 
-    if (USERS[inputKey]) {
+const code=document.getElementById("secretKey").value.trim();
 
-    currentRole = USERS[inputKey];
+if(USERS[code]){
 
-    playSuccess();
-    document.getElementById('authScreen').style.display = 'none';
+currentRole=USERS[code];
 
-    if (window.innerWidth >= 900) {
-        document.getElementById('scoutBoard').style.display = 'grid';
-    } else {
-        document.getElementById('scoutBoard').style.display = 'flex';
-    }
+playSuccess();
 
-    if (currentRole === "viewer") {
-        document.querySelector(".add-gold").style.display = "none";
-        document.querySelector(".reset-btn").style.display = "none";
-        document.getElementById("saveBtn").style.display = "none";
-        document.getElementById("reportBtn").style.display = "none";
-    }
+document.getElementById("authScreen").style.display="none";
 
-    updateAll();
-} else {
-        showToast("INVALID ACCESS KEY", false);
-    }
+if(window.innerWidth>=900){
+document.getElementById("scoutBoard").style.display="grid";
+}else{
+document.getElementById("scoutBoard").style.display="flex";
+}
+
+if(currentRole==="viewer"){
+document.querySelector(".add-gold").style.display="none";
+document.querySelector(".reset-btn").style.display="none";
+document.getElementById("saveBtn").style.display="none";
+document.getElementById("reportBtn").style.display="none";
+}
+
+updateAll();
+return;
+}
+
+loginAttempts++;
+
+if(loginAttempts===1){
+showToast("❌ WRONG CODE",false);
+}
+
+else if(loginAttempts===2){
+showToast("💡 HINT: THE WOLF NEVER SLEEPS",false);
+}
+
+else{
+
+showToast("💡 FINAL HINT: YEAR OF THE SCOUT MOVEMENT",false);
+
+document.getElementById("secretKey").disabled=true;
+
+setTimeout(()=>{
+loginAttempts=0;
+document.getElementById("secretKey").disabled=false;
+document.getElementById("secretKey").value="";
+},10000);
+
+}
+
 }
 
     window.addEventListener('resize', () => {

@@ -723,6 +723,7 @@ LOADING SYSTEM...
             <button class="util-btn add-gold"
 onclick="openAddModal()">[+] ADD</button>
             <button id="saveBtn" class="util-btn" onclick="saveDailyLog()">📅 SAVE DAY</button>
+            <button class="util-btn" style="border-color:#ff3333;color:#ff3333;" onclick="checkBackup()">🔄 RESTORE</button>
             <button class="util-btn" onclick="openHistory()">
 📜 HISTORY
 </button>
@@ -998,9 +999,9 @@ if (backup && (!localDB || localDB.length === 0)) {
         const hint = document.getElementById("authHint");
 
         if (loginAttempts === 1) {
-            hint.innerHTML = "❌ رمز غير صحيح<br>💡 تلميح: الرقم مرتبط بتاريخ مهم";
+            hint.innerHTML = "❌ رمز غير صحيح.<br>💡 تلميح: الرقم مرتبط بتاريخ مهم.";
         } else if (loginAttempts === 2) {
-            hint.innerHTML = "❌ ما زالت غير صحيحة<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام";
+            hint.innerHTML = "❌ ما زالت غير صحيحة.<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام.";
         } else {
             loginAttempts = 0;
             hint.innerHTML = "";
@@ -1034,6 +1035,62 @@ if (backup && (!localDB || localDB.length === 0)) {
     }
 
     function triggerAuth() { checkCode(); }
+
+    // ======= BACKUP RESTORE =======
+    function checkBackup() {
+        try {
+            const raw = localStorage.getItem("bonito_backup");
+            if (!raw) {
+                showToast("❌ مفيش backup محفوظ على الجهاز ده", false);
+                return;
+            }
+            const data = JSON.parse(raw);
+            if (!Array.isArray(data) || data.length === 0) {
+                showToast("❌ الـ backup فاضي", false);
+                return;
+            }
+
+            // Show summary in report modal
+            let report = "✅ تم إيجاد BACKUP\n";
+            report += "عدد الأعضاء: " + data.length + "\n\n";
+            data.forEach((m, i) => {
+                report += (i+1) + "- " + m.name;
+                if (m.rank) report += " (" + m.rank + ")";
+                if (m.photo && m.photo !== "") report += " 📷";
+                report += "\n";
+            });
+            report += "\n⬇️ اضغط RESTORE لاسترداد البيانات";
+
+            document.getElementById('reportTextarea').value = report;
+            document.getElementById('reportTextarea').style.display = "block";
+            document.getElementById('historyContainer').innerHTML = `
+                <button class="history-delete-btn" style="background:#000;color:#00ff66;border-color:#00ff66;margin-top:10px;"
+                    onclick="restoreFromBackup()">
+                    ✅ RESTORE DATA NOW
+                </button>`;
+            document.getElementById('reportModal').style.display = 'flex';
+
+        } catch(e) {
+            showToast("❌ خطأ في قراءة الـ backup", false);
+        }
+    }
+
+    function restoreFromBackup() {
+        try {
+            const raw = localStorage.getItem("bonito_backup");
+            const data = JSON.parse(raw);
+            if (!Array.isArray(data) || data.length === 0) {
+                showToast("❌ الـ backup فاضي", false);
+                return;
+            }
+            localDB = data;
+            updateAll();
+            closeModal();
+            showToast("✅ تم استرداد " + data.length + " عضو بنجاح", true);
+        } catch(e) {
+            showToast("❌ فشل الاسترداد", false);
+        }
+    }
 
     window.addEventListener('resize', () => {
         if(document.getElementById('scoutBoard').style.display !== 'none' && document.getElementById('scoutBoard').style.display !== '') {
@@ -1207,22 +1264,44 @@ if (backup && (!localDB || localDB.length === 0)) {
     }
 
     function fireReport() {
-        let report = "🟢 تمام طليعة BONITO\n";
-        report += "📅 " + new Date().toLocaleDateString() + "\n\n";
-        report += "✅ القوة على الأرض:\n";
+        const presentList = localDB.filter(m => m.status);
+        const absentList  = localDB.filter(m => !m.status);
 
-        let count = 1;
-        localDB.forEach(member => {
-            if(member.status){
-                report += count + "- " + member.name + "\n";
-                count++;
-            }
+        let report = "🟢 تمام طليعة BONITO\n";
+        report += "📅 " + new Date().toLocaleDateString() + "\n";
+        report += "━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+
+        // القوة على الأرض
+        report += "✅ القوة على الأرض (" + presentList.length + "):\n";
+        presentList.forEach((m, i) => {
+            report += (i + 1) + "- " + m.name;
+            if (m.rank) report += " (" + m.rank + ")";
+            report += "\n";
         });
 
         report += "\n";
-        report += "👥 القوة الكاملة: " + localDB.length + "\n";
-        report += "🟢 الحاضر: " + (count-1) + "\n";
-        report += "🔴 الغائب: " + (localDB.length-(count-1));
+        report += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+
+        // الغياب
+        report += "🔴 الغائبون (" + absentList.length + "):\n";
+        if (absentList.length === 0) {
+            report += "لا يوجد غياب ✅\n";
+        } else {
+            absentList.forEach((m, i) => {
+                report += (i + 1) + "- " + m.name;
+                if (m.rank) report += " (" + m.rank + ")";
+                if (m.reason && m.reason.trim() !== "") {
+                    report += " — السبب: " + m.reason.trim();
+                }
+                report += "\n";
+            });
+        }
+
+        report += "\n";
+        report += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        report += "👥 القوة الكاملة : " + localDB.length + "\n";
+        report += "🟢 الحاضر        : " + presentList.length + "\n";
+        report += "🔴 الغائب        : " + absentList.length;
 
         document.getElementById('reportTextarea').value = report;
         document.getElementById('reportTextarea').style.display = "block";
@@ -1268,6 +1347,10 @@ if (backup && (!localDB || localDB.length === 0)) {
             .catch(() => showToast("FAILED TO SAVE", false));
     }
 
+    // ======= CLOUDINARY PHOTO UPLOAD =======
+    const CLOUDINARY_CLOUD = "dnt0nqamh";
+    const CLOUDINARY_PRESET = "Bonito-app";
+
     function setPhoto(idx) {
         if (currentRole !== "admin") {
             showToast("NO PERMISSION", false);
@@ -1278,34 +1361,38 @@ if (backup && (!localDB || localDB.length === 0)) {
         input.type = "file";
         input.accept = "image/*";
 
-        input.onchange = function(e) {
+        input.onchange = async function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement("canvas");
-                    const ctx = canvas.getContext("2d");
-                    const maxSize = 300;
-                    let w = img.width, h = img.height;
+            showToast("⏳ جاري رفع الصورة...", false);
 
-                    if (w > h) { if (w > maxSize) { h *= maxSize/w; w = maxSize; } }
-                    else        { if (h > maxSize) { w *= maxSize/h; h = maxSize; } }
+            try {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", CLOUDINARY_PRESET);
+                formData.append("folder", "bonito_members");
 
-                    canvas.width = w;
-                    canvas.height = h;
-                    ctx.drawImage(img, 0, 0, w, h);
+                const res = await fetch(
+                    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+                    { method: "POST", body: formData }
+                );
 
-                    localDB[idx].photo = canvas.toDataURL("image/jpeg", 0.4);
+                const data = await res.json();
+
+                if (data.secure_url) {
+                    // احفظ URL بدل base64 — مش هياخد أي مساحة في Firebase
+                    localDB[idx].photo = data.secure_url;
                     updateAll();
-                    showToast("IMAGE SAVED (OPTIMIZED) ✔️", true);
-                };
-            };
-            reader.readAsDataURL(file);
+                    showToast("✅ تم رفع الصورة بنجاح", true);
+                } else {
+                    showToast("❌ فشل رفع الصورة", false);
+                }
+            } catch(err) {
+                showToast("❌ خطأ في الاتصال", false);
+            }
         };
+
         input.click();
     }
 

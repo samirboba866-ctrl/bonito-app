@@ -700,6 +700,7 @@ LOADING SYSTEM...
                 <div class="otp-box" id="o3"></div>
             </div>
             <div class="auth-hint" id="authHint"></div>
+
         </div>
 
         <!-- Lock screen -->
@@ -919,10 +920,7 @@ if (backup && (!localDB || localDB.length === 0)) {
 
     function focusOTP() {
         const inp = document.getElementById("realOtpInput");
-        if (inp) {
-            inp.removeAttribute("readonly");
-            inp.focus();
-        }
+        if (inp) { inp.removeAttribute("readonly"); inp.focus(); }
     }
 
     // Called every time the hidden input changes
@@ -999,9 +997,9 @@ if (backup && (!localDB || localDB.length === 0)) {
         const hint = document.getElementById("authHint");
 
         if (loginAttempts === 1) {
-            hint.innerHTML = "❌ رمز غير صحيح<br>💡 تلميح: الرقم مرتبط بتاريخ مهم";
+            hint.innerHTML = "❌ رمز غير صحيح.<br>💡 تلميح: الرقم مرتبط بتاريخ مهم.";
         } else if (loginAttempts === 2) {
-            hint.innerHTML = "❌ ما زالت غير صحيحة<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام";
+            hint.innerHTML = "❌ ما زالت غير صحيحة.<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام.";
         } else {
             loginAttempts = 0;
             hint.innerHTML = "";
@@ -1041,25 +1039,25 @@ if (backup && (!localDB || localDB.length === 0)) {
         try {
             const raw = localStorage.getItem("bonito_backup");
             if (!raw) {
-                showToast("❌ مفيش backup محفوظ على الجهاز ده", false);
+                showToast("❌ NO BACKUP FOUND ON THIS DEVICE", false);
                 return;
             }
             const data = JSON.parse(raw);
             if (!Array.isArray(data) || data.length === 0) {
-                showToast("❌ الـ backup فاضي", false);
+                showToast("❌ BACKUP IS EMPTY", false);
                 return;
             }
 
             // Show summary in report modal
-            let report = "✅ تم إيجاد BACKUP\n";
-            report += "عدد الأعضاء: " + data.length + "\n\n";
+            let report = "✅ BACKUP FOUND\n";
+            report += "MEMBERS: " + data.length + "\n\n";
             data.forEach((m, i) => {
                 report += (i+1) + "- " + m.name;
                 if (m.rank) report += " (" + m.rank + ")";
                 if (m.photo && m.photo !== "") report += " 📷";
                 report += "\n";
             });
-            report += "\n⬇️ اضغط RESTORE لاسترداد البيانات";
+            report += "\n⬇️ PRESS RESTORE TO RECOVER DATA";
 
             document.getElementById('reportTextarea').value = report;
             document.getElementById('reportTextarea').style.display = "block";
@@ -1071,7 +1069,7 @@ if (backup && (!localDB || localDB.length === 0)) {
             document.getElementById('reportModal').style.display = 'flex';
 
         } catch(e) {
-            showToast("❌ خطأ في قراءة الـ backup", false);
+            showToast("❌ ERROR READING BACKUP", false);
         }
     }
 
@@ -1080,15 +1078,15 @@ if (backup && (!localDB || localDB.length === 0)) {
             const raw = localStorage.getItem("bonito_backup");
             const data = JSON.parse(raw);
             if (!Array.isArray(data) || data.length === 0) {
-                showToast("❌ الـ backup فاضي", false);
+                showToast("❌ BACKUP IS EMPTY", false);
                 return;
             }
             localDB = data;
             updateAll();
             closeModal();
-            showToast("✅ تم استرداد " + data.length + " عضو بنجاح", true);
+            showToast("✅ RESTORED " + data.length + " MEMBERS SUCCESSFULLY", true);
         } catch(e) {
-            showToast("❌ فشل الاسترداد", false);
+            showToast("❌ RESTORE FAILED", false);
         }
     }
 
@@ -1198,7 +1196,7 @@ if (backup && (!localDB || localDB.length === 0)) {
         const rank = document.getElementById("newRank").value.trim();
 
         if(fullName === "") {
-            showToast("ENTER MEMBER NAME", false);
+            showToast("❌ ENTER MEMBER NAME", false);
             return;
         }
 
@@ -1217,7 +1215,7 @@ if (backup && (!localDB || localDB.length === 0)) {
 
         closeAddModal();
 
-        showToast("✅ MEMBER ADDED", true);
+        showToast("✅ MEMBER ADDED SUCCESSFULLY", true);
     }
 
     // ✅ FIX 1: deleteMember — تعريف واحد صح، بيشيل العضو بس مش الهيستوري
@@ -1260,7 +1258,7 @@ if (backup && (!localDB || localDB.length === 0)) {
         });
         updateAll();
         closeResetModal();
-        showToast("⚡ ATTENDANCE RESET", true);
+        showToast("⚡ ATTENDANCE RESET COMPLETE", true);
     }
 
     function fireReport() {
@@ -1343,8 +1341,8 @@ if (backup && (!localDB || localDB.length === 0)) {
         };
 
         firebase.database().ref("daily_logs").push(log)
-            .then(() => showToast("تم حفظ سجل اليوم ✔️", true))
-            .catch(() => showToast("FAILED TO SAVE", false));
+            .then(() => showToast("✔️ DAILY LOG SAVED", true))
+            .catch(() => showToast("❌ FAILED TO SAVE", false));
     }
 
     // ======= CLOUDINARY PHOTO UPLOAD =======
@@ -1365,7 +1363,7 @@ if (backup && (!localDB || localDB.length === 0)) {
             const file = e.target.files[0];
             if (!file) return;
 
-            showToast("⏳ جاري رفع الصورة...", false);
+            showToast("⏳ UPLOADING IMAGE...", false);
 
             try {
                 const formData = new FormData();
@@ -1384,12 +1382,12 @@ if (backup && (!localDB || localDB.length === 0)) {
                     // احفظ URL بدل base64 — مش هياخد أي مساحة في Firebase
                     localDB[idx].photo = data.secure_url;
                     updateAll();
-                    showToast("✅ تم رفع الصورة بنجاح", true);
+                    showToast("✅ IMAGE UPLOADED SUCCESSFULLY", true);
                 } else {
-                    showToast("❌ فشل رفع الصورة", false);
+                    showToast("❌ UPLOAD FAILED", false);
                 }
             } catch(err) {
-                showToast("❌ خطأ في الاتصال", false);
+                showToast("❌ CONNECTION ERROR", false);
             }
         };
 

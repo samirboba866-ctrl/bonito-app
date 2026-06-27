@@ -997,9 +997,9 @@ if (backup && (!localDB || localDB.length === 0)) {
         const hint = document.getElementById("authHint");
 
         if (loginAttempts === 1) {
-            hint.innerHTML = "❌ رمز غير صحيح.<br>💡 تلميح: الرقم مرتبط بتاريخ مهم.";
+            hint.innerHTML = "❌ رمز غير صحيح<br>💡 تلميح: الرقم مرتبط بتاريخ مهم";
         } else if (loginAttempts === 2) {
-            hint.innerHTML = "❌ ما زالت غير صحيحة.<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام.";
+            hint.innerHTML = "❌ ما زالت غير صحيحة<br>💡 تلميح: ابحث عن سنة مرتبطة بالذئب الذي لا ينام";
         } else {
             loginAttempts = 0;
             hint.innerHTML = "";
